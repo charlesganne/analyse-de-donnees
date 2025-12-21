@@ -12,6 +12,12 @@ number_section: true # pour numeroter les sections
 number_depth: 3 # pour adapter la profondeur de numerotation
 toc-depth: 3 # pour gérer la profondeur de la table des matières
 toc-title: Table des matières # Titre de la table des matieres
+toc-location: left # sommaire à gauche
+execute: 
+  echo: true # le code R s’affiche dans le rendu final
+cache: true # Quarto peut réutiliser des résultats déjà calculés (plus rapide quand on recompile)
+message: false
+warning: false # messages/warnings cachés dans le livrable (sortie plus propre).
 ---
 
 ```{r}
@@ -21,10 +27,12 @@ toc-title: Table des matières # Titre de la table des matieres
 # importation des librairies
 library(ggplot2) # tracer des graphiques modernes 
 library(dygraphs) # tracer des graphiques interractifs 
-library(corrplot)
-library(gridExtra)
+library(corrplot) # corrélations
+library(gridExtra) # grilles de plots
 library(scales)
-
+library(forcats) # facteurs
+library(reshape2) # /melt pour restructurer
+library(BioStatR) # eta2
 ```
 
 # Chargement et découverte du jeu de données
@@ -50,17 +58,17 @@ summary(SalleDeSport)
 
 Ce jeu de données comprend des mesures empiriques réalisées sur un échantillon de $973$ usagers d'une salle de sport. Chaque personne est décrite par les variables suivantes :
 
-- *gender* : Sexe du membre de la salle de sport (homme ou femme)
-- *weight* : Poids du membre en kilogrammes
-- *height* : Taille du membre en mètres
-- *duration* : Durée de chaque séance d’entraı̂nement en heures
-- *calories* : Total des calories brûlées au cours de chaque séance
-- *fat* : Pourcentage de graisse corporelle du membre
-- *water* : Consommation quotidienne d’eau pendant les séances d’entraı̂nement
-- *level* : Niveau d’expérience, de débutant (1) à expert (3)
-- *bmi* : Indice de masse corporelle (IMC), calculé à partir de la taille et du poids
+-   *gender* : Sexe du membre de la salle de sport (homme ou femme)
+-   *weight* : Poids du membre en kilogrammes
+-   *height* : Taille du membre en mètres
+-   *duration* : Durée de chaque séance d’entraı̂nement en heures
+-   *calories* : Total des calories brûlées au cours de chaque séance
+-   *fat* : Pourcentage de graisse corporelle du membre
+-   *water* : Consommation quotidienne d’eau pendant les séances d’entraı̂nement
+-   *level* : Niveau d’expérience, de débutant (1) à expert (3)
+-   *bmi* : Indice de masse corporelle (IMC), calculé à partir de la taille et du poids
 
-Contrôlons la nature de chaque variable : 
+Contrôlons la nature de chaque variable :
 
 ```{r}
 str(SalleDeSport)
@@ -71,9 +79,10 @@ La variable *gender* est qualitative nominale et la variable *level* est qualita
 ```{r}
 SalleDeSport$gender<-as.factor(SalleDeSport$gender)
 SalleDeSport$level<-as.factor(SalleDeSport$level)
+SalleDeSport$level <- fct_relevel(SalleDeSport$level ,1, 2, 3)
 ```
 
-On fait quelques geom plot pour commencer a essayer d'observer des trucs dans e jeu de données : 
+On fait quelques geom plot pour commencer a essayer d'observer des trucs dans e jeu de données :
 
 ```{r}
 ggplot(data=SalleDeSport)+
@@ -94,9 +103,10 @@ ggplot(SalleDeSport, aes(x=duration, y=calories, color=gender)) +
   geom_point(alpha=0.6) +
   labs(title="Calories brûlées vs Durée de séance", x="Durée (heures)", y="Calories")
 
+
 ```
 
-Vérifions la parité avec des pie-chart pour le genre et le niveau (variables qualitative nominale et ordinale) : 
+Vérifions la parité avec des pie-chart pour le genre et le niveau (variables qualitative nominale et ordinale) :
 
 ```{r}
 SalleDeSport$level <- as.factor(SalleDeSport$level)
@@ -150,13 +160,26 @@ grid.arrange(g1, g2, ncol=2)
 
 ```
 
+rerésenter chaque variable quantative en fonction de chaque variable qualitative (genre et niveau) (dans des boxplot colorés de maniere coherente)
+faire la matrice de correlation pour toutes les variables qualitatives
+explorer les differentes combinaisons afin de determiner les variables fortement liées et inversement  
 
 
+A l'aide de la fonction `eta2()` de la librairie `BioStatR`, calculez le rapport de corrélation $\eta^2$ entre chaque variable quantitative et chaque variable qualitative. Commentez.(toutes les combinaisons)
 
+## Entre deux variables qualitatives
 
+**Question :** Analysez la table de contingence entre les deux variables qualitatives **Type** et **Qualite** avec la commande `table()`. Ajoutez les effectifs marginaux avec la commande `addmargins()`.
 
+```{r}
+# A COMPLETER
+```
 
+**Question :** Calculez et représentez les profils-lignes à l'aide des fonctions `prop.table(..., margin = ...)` et `mosaicplot`. Interprétez les résultats. Faites de même avec les profils-colonnes.
 
+```{r}
+# A COMPLETER
+```
 
 
 ## Quarto

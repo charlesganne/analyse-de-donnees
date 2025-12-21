@@ -3018,17 +3018,17 @@ data&#39;s fill values.</code></pre>
 <span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>Ce jeu de données comprend des mesures empiriques réalisées sur un échantillon de $973$ usagers d&#39;une salle de sport. Chaque personne est décrite par les variables suivantes :</span>
 <span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*gender* : Sexe du membre de la salle de sport (homme ou femme)</span>
-<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*weight* : Poids du membre en kilogrammes</span>
-<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*height* : Taille du membre en mètres</span>
-<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*duration* : Durée de chaque séance d’entraı̂nement en heures</span>
-<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*calories* : Total des calories brûlées au cours de chaque séance</span>
-<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*fat* : Pourcentage de graisse corporelle du membre</span>
-<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*water* : Consommation quotidienne d’eau pendant les séances d’entraı̂nement</span>
-<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*level* : Niveau d’expérience, de débutant (1) à expert (3)</span>
-<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>*bmi* : Indice de masse corporelle (IMC), calculé à partir de la taille et du poids</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*gender* : Sexe du membre de la salle de sport (homme ou femme)</span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*weight* : Poids du membre en kilogrammes</span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*height* : Taille du membre en mètres</span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*duration* : Durée de chaque séance d’entraı̂nement en heures</span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*calories* : Total des calories brûlées au cours de chaque séance</span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*fat* : Pourcentage de graisse corporelle du membre</span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*water* : Consommation quotidienne d’eau pendant les séances d’entraı̂nement</span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*level* : Niveau d’expérience, de débutant (1) à expert (3)</span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>*bmi* : Indice de masse corporelle (IMC), calculé à partir de la taille et du poids</span>
 <span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>Contrôlons la nature de chaque variable : </span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>Contrôlons la nature de chaque variable :</span>
 <span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(SalleDeSport)</span>
@@ -3041,7 +3041,7 @@ data&#39;s fill values.</code></pre>
 <span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a>SalleDeSport<span class="sc">$</span>level<span class="ot">&lt;-</span><span class="fu">as.factor</span>(SalleDeSport<span class="sc">$</span>level)</span>
 <span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a>On fait quelques geom plot pour commencer a essayer d&#39;observer des trucs dans e jeu de données : </span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a>On fait quelques geom plot pour commencer a essayer d&#39;observer des trucs dans e jeu de données :</span>
 <span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>SalleDeSport)<span class="sc">+</span></span>
@@ -3064,7 +3064,7 @@ data&#39;s fill values.</code></pre>
 <span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-107"><a href="#cb20-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb20-108"><a href="#cb20-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a>Vérifions la parité avec des pie-chart pour le genre et le niveau (variables qualitative nominale et ordinale) : </span>
+<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a>Vérifions la parité avec des pie-chart pour le genre et le niveau (variables qualitative nominale et ordinale) :</span>
 <span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a>SalleDeSport<span class="sc">$</span>level <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(SalleDeSport<span class="sc">$</span>level)</span>
@@ -3118,36 +3118,27 @@ data&#39;s fill values.</code></pre>
 <span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb20-164"><a href="#cb20-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a><span class="fu">## Quarto</span></span>
 <span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <span class="ot">&lt;https://quarto.org&gt;</span>.</span>
 <span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a><span class="fu">## Running Code</span></span>
 <span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a>When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:</span>
 <span id="cb20-172"><a href="#cb20-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-174"><a href="#cb20-174" aria-hidden="true" tabindex="-1"></a><span class="fu">## Quarto</span></span>
-<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <span class="ot">&lt;https://quarto.org&gt;</span>.</span>
-<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## Running Code</span></span>
-<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a>When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:</span>
-<span id="cb20-181"><a href="#cb20-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-185"><a href="#cb20-185" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb20-186"><a href="#cb20-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a>You can add options to executable code like this</span>
-<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-192"><a href="#cb20-192" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-193"><a href="#cb20-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb20-194"><a href="#cb20-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb20-195"><a href="#cb20-195" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> <span class="dv">2</span></span>
-<span id="cb20-196"><a href="#cb20-196" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-197"><a href="#cb20-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-198"><a href="#cb20-198" aria-hidden="true" tabindex="-1"></a>The <span class="in">`echo: false`</span> option disables the printing of code (only output is displayed).</span>
+<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a>You can add options to executable code like this</span>
+<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-183"><a href="#cb20-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb20-185"><a href="#cb20-185" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb20-186"><a href="#cb20-186" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> <span class="dv">2</span></span>
+<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a>The <span class="in">`echo: false`</span> option disables the printing of code (only output is displayed).</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
