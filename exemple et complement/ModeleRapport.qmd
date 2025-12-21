@@ -1,0 +1,161 @@
+---
+title: "Aide pour le rapport du projet"
+author: 
+  - name: "author 1"
+  - name: "author 2"
+date: "`r Sys.Date()`"
+bibliography: exbiblio.bib
+format: 
+  pdf:
+    toc: TRUE
+    toc_depth: 2
+    number-sections: true
+    header-includes:
+    - \usepackage{color}
+    - \newcommand{\X}{\mathbf{X}}
+execute: 
+  warning: false
+  message: false
+---
+
+```{r} 
+#| echo: false
+
+library(ggplot2)
+library(corrplot)
+library(FactoMineR)
+library(factoextra)
+library(gridExtra)
+library(knitr)
+library(reshape2)
+```
+
+\vspace{1cm}
+Ce document a pour but de vous donner des consignes pour la rédaction du rapport et vous donner des éléments de démarrage pour la rédaction d'un rapport en Quarto. 
+
+# Consignes de rédaction
+
+Votre rapport doit synthétiser votre travail d'étude du jeu de données abordé durant le projet. Il doit comprendre :
+
+- une organisation par sections, sous-sections, ... une introduction et une conclusion
+- pour chaque question: expliquez vos choix de méthodes, mettez-les en application et commentez les résultats
+- Toute figure doit avoir une légende et doit être commentée
+- Même remarque pour les tableaux de résultats
+- ....
+
+# Quelques éléments de Quarto
+
+Des éléments de rédaction d'un document Quarto sont donnés dans la partie 4 des tutoriels R ([ici](https://cmaugis.github.io/TutorielR-V2025/Part4-Ravance.html#r%C3%A9daction-avec-quarto)) et dans le TP1.
+
+Nous rappelons ici quelques points : 
+
+- Vous devez créer un documents Quarto au format de sortie PDF
+- Vous pouvez organiser votre document en sections, sous-sections, ... grâce à `#`, `##`, ...
+- Vous pouvez dans l'en-tête de votre document Quarto
+  + préciser le titre du document, les auteurs, la date, ...
+  + ajouter une table des matières avec l'option `toc` 
+  + ajouter des macro Latex dans `header-includes`
+  + ajouter une bibliographie avec `bibliography:`
+  + ...
+- Vous pouvez mettre du code R dans des chunks R et jouer sur les options comme
+  + `#| echo: false` pour ne pas afficher le code dans le rapport
+  + `#| eval: false` pour ne pas l'évaluer dans le rapport
+  + `#| fig-height:` , `#| fig-width:` , ... pour maitriser la taille des figures
+  + `#| fig-cap:` pour mettre une légende aux figures 
+  + `#| message: false` pour ne pas afficher les messages de R
+  + `#| warning: false` pour ne pas afficher les warnings de R
+  + ...
+  
+Vous pouvez appliquer des options permanentes aux chunks en les ajoutant dans l'en-tête dans la partie `execute:`
+  
+- Vous pouvez mettre des formules mathématiques Latex entre `$...$`. On peut aussi utiliser `\begin{equation} .... \end{equation}`, ...
+
+- Références croisées : 
+Pour citer une Figure, une table, ... dans le texte, il faut préciser l'option `#| label: ` et dans le texte utiliser `@ ...` avec `fig-` pour une figure, `tbl-` pour une table. Un exemple pour chaque est donné dans la suite de ce document. Surtout, ne pas écrire des phrases du type "d'après la figure ci-dessous" !
+
+# Etude du jeu de données Iris
+
+*On va ici utiliser le célèbre jeu de données des Iris pour  illustrer quelques points de rédaction en Quarto. Vous êtes donc invités à parcourir en même temps le .pdf et le .qmd pour comprendre les points de syntaxe.* 
+
+
+## Récupération des données 
+
+Les données Iris ont été collectées par Edgar Anderson [@iris]. Ce sont les mesures en centimètres des variables suivantes : longueur du sépale (Sepal.Length), largeur du sépale (Sepal.Width), longueur du pétale (Petal.Length) et largeur du pétale (Petal.Width) pour trois espèces d'iris :*Iris setosa*, *I. versicolor* et *I. virginica*. Les données sont disponibles de base sous R et on les récupère donc avec la fonction `data(iris)`. Les premières lignes du jeu de données sont affichés dans la @tbl-tabiris. 
+
+```{r}
+#| echo: false
+#| label: tbl-tabiris
+#| tbl-cap: "Les premières lignes du jeu de données iris"
+
+data(iris)
+kable(head(iris),align = 'c')
+```
+
+On retrouve bien que les données sont composées de `r nrow(iris)` individus, de 4 variables quantitatives et d'une variable qualitative *Species*. Dans la suite, nous notons $Y$ la variable *Species* et $\X$ la matrice composée des 4 autres variables
+
+$$
+\textcolor{blue}{\X=\left(X_{ij}\right)_{i\in\{1,\ldots,150\},\ j\in\{1,\ldots,4\}}}.
+$$
+
+## Statistiques descriptives
+
+Nous faisons ici quelques statistiques descriptives pour prendre en main les données. 
+
+### La variable *Species*
+
+Nous commençons par la variable *Species* (vecteur $Y$) qui est une variable qualitative. La @fig-species nous permet de contrôler que nous avons bien $50$ individus par espèce. 
+
+```{r} 
+#| echo: false
+#| fig-cap: "Barplot de la variable Species"
+#| label: fig-species
+#| fig-height: 2
+
+ggplot(iris,aes(x=Species))+
+  geom_bar()
+```
+
+### Les 4 variables quantitatives
+
+Nous nous intéressons maintenant aux 4 variables quantitatives (matrice $X$). La @fig-corrplot  montre les corrélations entre les 4 variables. On peut remarquer que la largeur et la longuer des pétales sont fortement corrélées positivement, ce n'est pas le cas pour les sépales. 
+
+```{r}
+#| echo: false
+#| label: fig-corrplot
+#| fig-cap: "Matrice des corrélations entre les 4 variables quantitatives"
+#| fig-height: 3
+corrplot(cor(iris[,-5]), method="ellipse")
+```
+
+A l'aide de la librairie `FactoMineR`, on met en place une ACP. On représente en @fig-ACP les individus projetés sur le premier plan factoriel, la couleur correspondant à l'espèce ainsi que les corrélations des variables quantitatives initiales avec les deux premières composantes principales. 
+
+
+```{r}
+#| fig-height: 5
+#| layout-ncol: 2
+#| label: fig-ACP
+#| fig-cap: Résultats de l'ACP
+#| fig-subcap: 
+#|   - "Projection des individus dans le premier plan factoriel"
+#|   - "Corrélation entre les variables et les deux premières composantes principales"
+respca=PCA(iris,quali.sup=5,graph=F)
+fviz_pca_ind(respca,label="none",habillage=5)+
+  theme(legend.position="bottom")
+fviz_pca_var(respca) 
+```
+
+On peut remarquer que les *Setosa* se distinguent des deux autres espèces principalement par la largeur de leur sépales. On peut appuyer ce point à l'aide de la @fig-violin.
+
+```{r}
+#| echo: false
+#| fig-height: 3
+#| message: false
+#| label: fig-violin
+#| fig-cap: "Violin plots de la largeur des sépales pour chaque espèce"
+
+ggplot(iris,aes(x=Species,y=Sepal.Width)) +
+  geom_violin() +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.5)
+```
+
+# References

@@ -1,0 +1,182 @@
+---
+title: "Projet de Timeo et Charles"
+author: "Timeo Bossuet, Charles Ganne"
+toc: true # Active une table des matieres automatique à partir des titres markdown
+format:
+  html:
+    html-math-method: katex # pour le rendu des formules mathématiques. plus rapide que mathjax
+    code-tools: true # boutons interactifs au dessus des blocs de code (copier le code, afficher/masquer)
+    self-contained: true # le html généré contient tout en un seul fichier
+editor: visual
+number_section: true # pour numeroter les sections
+number_depth: 3 # pour adapter la profondeur de numerotation
+toc-depth: 3 # pour gérer la profondeur de la table des matières
+toc-title: Table des matières # Titre de la table des matieres
+---
+
+```{r}
+#| echo: false 
+#| error: false
+#| warning: false
+# importation des librairies
+library(ggplot2) # tracer des graphiques modernes 
+library(dygraphs) # tracer des graphiques interractifs 
+library(corrplot)
+library(gridExtra)
+library(scales)
+
+```
+
+# Chargement et découverte du jeu de données
+
+Ce projet a pour objectif de mener l'étude descriptive uni- et bi-dimensionnelle du jeu de données `DataGym3MIC` disponible sous Moodle.
+
+*Remarque : penser à enlever les "#\|eval: false" au fur et à mesure de l'avancement dans le projet pour avoir les résultats dans le compte-rendu final.*
+
+Commençons par charger le jeu de données à l'aide de la fonction `read.table()`. Visualisons ensuite les premières lignes à l'aide de la fonction `head`. La fonction `dim` nous permet de constater les dimensions du jeu de données.
+
+```{r}
+# options possibles (tout ça pour le compte rendu final)
+#| echo: true #(#| echo: false) : inclure le code (ou pas)
+#| eval: true #(#| eval: false) : évalue le code (ou pas)
+#| warning: true #(#| warning: false) : affiche les warnings (ou pas)
+#| message: true #(#| message: false) : affiche les messages (ou pas)
+
+SalleDeSport <- read.table("DataGym3MIC.txt", header = T, stringsAsFactors = T)
+head(SalleDeSport) # voir les 6 premières lignes
+dim(SalleDeSport) # voir les dimensions du jeu de données
+summary(SalleDeSport)
+```
+
+Ce jeu de données comprend des mesures empiriques réalisées sur un échantillon de $973$ usagers d'une salle de sport. Chaque personne est décrite par les variables suivantes :
+
+- *gender* : Sexe du membre de la salle de sport (homme ou femme)
+- *weight* : Poids du membre en kilogrammes
+- *height* : Taille du membre en mètres
+- *duration* : Durée de chaque séance d’entraı̂nement en heures
+- *calories* : Total des calories brûlées au cours de chaque séance
+- *fat* : Pourcentage de graisse corporelle du membre
+- *water* : Consommation quotidienne d’eau pendant les séances d’entraı̂nement
+- *level* : Niveau d’expérience, de débutant (1) à expert (3)
+- *bmi* : Indice de masse corporelle (IMC), calculé à partir de la taille et du poids
+
+Contrôlons la nature de chaque variable : 
+
+```{r}
+str(SalleDeSport)
+```
+
+La variable *gender* est qualitative nominale et la variable *level* est qualitative ordinale. La variable *calories* est quantitative discrète et les autres sont quantitatives continues. Attention, il faut bien préciser à R les variables qui doivent être considérées comme qualitatives. On utilise donc la fonction `as.factor()` sur les variables *gender* et *level*.
+
+```{r}
+SalleDeSport$gender<-as.factor(SalleDeSport$gender)
+SalleDeSport$level<-as.factor(SalleDeSport$level)
+```
+
+On fait quelques geom plot pour commencer a essayer d'observer des trucs dans e jeu de données : 
+
+```{r}
+ggplot(data=SalleDeSport)+
+   geom_point(aes(x=weight,y=height,color=fat))
+
+# Histogramme
+ggplot(SalleDeSport, aes(x=calories)) +
+  geom_histogram(bins=30, fill="steelblue", alpha=0.7) +
+  labs(title="Distribution des calories brûlées", x="Calories", y="Fréquence")
+
+# Boxplot par niveau
+ggplot(SalleDeSport, aes(x=factor(level), y=duration, fill=factor(level))) +
+  geom_boxplot() +
+  labs(title="Durée des séances par niveau", x="Niveau", y="Durée (heures)")
+
+# Nuage de points
+ggplot(SalleDeSport, aes(x=duration, y=calories, color=gender)) +
+  geom_point(alpha=0.6) +
+  labs(title="Calories brûlées vs Durée de séance", x="Durée (heures)", y="Calories")
+
+```
+
+Vérifions la parité avec des pie-chart pour le genre et le niveau (variables qualitative nominale et ordinale) : 
+
+```{r}
+SalleDeSport$level <- as.factor(SalleDeSport$level)
+SalleDeSport$gender <- as.factor(SalleDeSport$gender)
+
+# Palette de couleurs neutres pour le genre
+gender_colors <- c("Homme" = "#6BAED6", "Femme" = "#FDB0C0") # bleu clair / rose pâle
+
+g1 <- ggplot(SalleDeSport, aes(x=gender, fill=gender)) +
+  geom_bar() +
+  scale_fill_manual(values=gender_colors) +
+  labs(title="Répartition par genre",
+       x="Genre",
+       y="Nombre d'individus") +
+  theme_minimal() +
+  theme(legend.position="none")
+
+# Palette dégradée pour le niveau (exemple : du vert clair au vert foncé)
+level_colors <- scales::brewer_pal(palette="Blues")(nlevels(SalleDeSport$level))
+
+g2 <- ggplot(SalleDeSport, aes(x=level, fill=level)) +
+  geom_bar() +
+  scale_fill_manual(values=level_colors) +
+  labs(title="Répartition par niveau",
+       x="Niveau",
+       y="Nombre d'individus") +
+  theme_minimal()
+
+grid.arrange(g1, g2, ncol=2)
+
+g1 <- ggplot(SalleDeSport, aes(x=gender, fill=gender)) +
+  geom_bar(aes(y = (..count..)/sum(..count..))) +
+  scale_fill_manual(values=gender_colors) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title="Répartition par genre (%)",
+       x="Genre",
+       y="Proportion") +
+  theme_minimal() +
+  theme(legend.position="none")
+
+g2 <- ggplot(SalleDeSport, aes(x=level, fill=level)) +
+  geom_bar(aes(y = (..count..)/sum(..count..))) +
+  scale_fill_manual(values=level_colors) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title="Répartition par niveau (%)",
+       x="Niveau",
+       y="Proportion") +
+  theme_minimal()
+grid.arrange(g1, g2, ncol=2)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+#| eval: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
