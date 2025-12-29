@@ -22,11 +22,9 @@ warning: false # messages/warnings cachés dans le livrable (sortie plus propre)
 
 ```{r}
 #| echo: false 
-#| error: false
-#| warning: false
 # importation des librairies
 library(ggplot2) # tracer des graphiques modernes 
-library(dygraphs) # tracer des graphiques interractifs 
+library(dygraphs) # tracer des graphiques interactifs 
 library(corrplot) # corrélations
 library(gridExtra) # grilles de plots
 library(scales)
@@ -44,16 +42,16 @@ Ce projet a pour objectif de mener l'étude descriptive uni- et bi-dimensionnell
 
 ```{r}
 # options possibles (tout ça pour le compte rendu final)
-#| echo: true #(#| echo: false) : inclure le code (ou pas)
+#| echo: false #(#| echo: true) : inclure le code (ou pas)
 #| eval: true #(#| eval: false) : évalue le code (ou pas)
 #| warning: true #(#| warning: false) : affiche les warnings (ou pas)
 #| message: true #(#| message: false) : affiche les messages (ou pas)
 
 SalleDeSport <- read.table("DataGym3MIC.txt", header = T, stringsAsFactors = T) # charger le jeu de données
 head(SalleDeSport) # voir les 6 premières lignes
-dim(SalleDeSport) # voir les dimensions du jeu de données
-summary(SalleDeSport)
-str(SalleDeSport) # contrôle de la nature de chaque variable
+#dim(SalleDeSport) # voir les dimensions du jeu de données
+#summary(SalleDeSport)
+#str(SalleDeSport) # contrôle de la nature de chaque variable
 ```
 
 Ce jeu de données comprend des mesures empiriques réalisées sur un échantillon de $973$ usagers d'une salle de sport. Chaque personne est décrite par les variables suivantes :
@@ -61,16 +59,17 @@ Ce jeu de données comprend des mesures empiriques réalisées sur un échantill
 -   *gender* : Sexe du membre de la salle de sport (homme ou femme)
 -   *weight* : Poids du membre en kilogrammes
 -   *height* : Taille du membre en mètres
--   *duration* : Durée de chaque séance d’entraı̂nement en heures
+-   *duration* : Durée de chaque séance d'entraî̂nement en heures
 -   *calories* : Total des calories brûlées au cours de chaque séance
 -   *fat* : Pourcentage de graisse corporelle du membre
--   *water* : Consommation quotidienne d’eau pendant les séances d’entraı̂nement
--   *level* : Niveau d’expérience, de débutant (1) à expert (3)
+-   *water* : Consommation quotidienne d'eau pendant les séances d'entraî̂nement
+-   *level* : Niveau d'expérience, de débutant (1) à expert (3)
 -   *bmi* : Indice de masse corporelle (IMC), calculé à partir de la taille et du poids
 
-En regardant le résultat de la fonction `str`, on observe que la variable *gender* est qualitative nominale et la variable *level* est qualitative ordinale. De plus, la variable *calories* est quantitative discrète et les autres sont quantitatives continues. Attention, il faut bien préciser à R les variables qui doivent être considérées comme qualitatives. On utilise donc la fonction `as.factor()` sur les variables *gender* et *level*.
+On observe que la variable *gender* est qualitative nominale et la variable *level* est qualitative ordinale. De plus, la variable *calories* est quantitative discrète et les autres sont quantitatives continues. Attention, il faut bien préciser à R les variables qui doivent être considérées comme qualitatives. On utilise donc la fonction `as.factor()` sur les variables *gender* et *level*.
 
 ```{r}
+#| echo: false
 SalleDeSport$gender <- factor(SalleDeSport$gender, levels=c("Male","Female"), labels = c("Homme", "Femme"))
 SalleDeSport$level <- factor(SalleDeSport$level, levels=c("1","2","3"), labels=c("Débutant","Intermédiaire","Expert"), ordered=TRUE)
 ```
@@ -85,9 +84,10 @@ Pour chaque variable quantitative, on examine des statistiques descriptives (moy
 
 #### Poids (weight)
 
-Le boxplot montre une médiane de 70 kg, avec une dispersion notable (la moitié des individus se situe entre 58 et 86 kg). On observe des valeurs atypiques élevées (points au-dessus de ~125–130 kg). L’histogramme confirme une distribution asymétrique à droite : beaucoup d’individus entre ~50 et 85 kg avec un maximum de fréquence autour de 60–70 kg. On observe une queue à droite marquée, correspondant à des individus plus lourds (au-delà de 100 kg), déjà visibles comme valeurs atypiques/outliers sur le boxplot. La distribution n’est donc pas strictement gaussienne. Les 30 bins permettent de bien faire apparaître la queue à droite sans trop lisser la distribution. Un nombre plus faible masquerait les variations fines dans la zone centrale.
+Le boxplot montre une médiane de 70 kg, avec une dispersion notable (la moitié des individus se situe entre 58 et 86 kg). On observe des valeurs atypiques élevées (points au-dessus de \~125–130 kg). L’histogramme confirme une distribution asymétrique à droite : beaucoup d’individus entre \~50 et 85 kg avec un maximum de fréquence autour de 60–70 kg. On observe une queue à droite marquée, correspondant à des individus plus lourds (au-delà de 100 kg), déjà visibles comme valeurs atypiques/outliers sur le boxplot. La distribution n’est donc pas strictement gaussienne. Les 30 bins permettent de bien faire apparaître la queue à droite sans trop lisser la distribution. Un nombre plus faible masquerait les variations fines dans la zone centrale.
 
 ```{r}
+#| echo: false
 # 1) Violin + boxplot
 p_violin_box <- ggplot(SalleDeSport, aes(x = "", y = weight)) +
   geom_violin(fill = "#9ECAE1", alpha = 0.8, trim = FALSE) +
@@ -142,9 +142,10 @@ p_hist_med <- ggplot(SalleDeSport, aes(x = weight)) +
 
 #### Taille (height)
 
-La médiane est proche de 1,70–1,72 m, avec un intervalle interquartile autour de 1,62 à 1,80 m. Le boxplot ne met pas en évidence d’outliers marqués. L’histogramme suggère une distribution plutôt concentrée entre ~1,60 et ~1,80 m, avec deux petites "bosses" (distribution pas parfaitement en cloche, probablement liée à la coexistence de populations masculines et féminines), mais sans valeurs extrêmes dominantes. En traçant les graphiques avec différents nombres de bins, on a remarqué que certaines configurations masquaient le double pic tandis que d'autres le faisait clairement apparaître. On a donc choisi 19 bins pour qu'ils apparaissent sans trop montrer les microvariations autour.
+La médiane est proche de 1,70–1,72 m, avec un intervalle interquartile autour de 1,62 à 1,80 m. Le boxplot ne met pas en évidence d’outliers marqués. L’histogramme suggère une distribution plutôt concentrée entre \~1,60 et \~1,80 m, avec deux petites "bosses" (distribution pas parfaitement en cloche, probablement liée à la coexistence de populations masculines et féminines), mais sans valeurs extrêmes dominantes. En traçant les graphiques avec différents nombres de bins, on a remarqué que certaines configurations masquaient le double pic tandis que d'autres le faisait clairement apparaître. On a donc choisi 19 bins pour qu'ils apparaissent sans trop montrer les microvariations autour.
 
 ```{r}
+#| echo: false
 # 1) Violin + boxplot
 p_violin_box <- ggplot(SalleDeSport, aes(x = "", y = height)) +
   geom_violin(fill = "#9ECAE1", alpha = 0.8, trim = FALSE) +
@@ -199,9 +200,10 @@ p_hist_med <- ggplot(SalleDeSport, aes(x = height)) +
 
 #### Durée (duration)
 
-La médiane est autour de 1,25 h, et la moitié des séances se situe approximativement entre ~1,05 et ~1,45 h. Les durées extrêmes vont d’environ 0,5 h à 2 h. L’histogramme montre une concentration nette entre 1 h et 1,5 h, avec quelques séances plus courtes et plus longues : la variabilité est réelle mais reste dans une plage plausible. Ca pourrait par exemple être une recommandation de la salle de sport de faire une séance courte, deux séances moyennes et une séance longue par semaine. Les 30 bins sont pertinentes car la variable est bornée sur un intervalle court et continu. Elles permettent de bien visualiser les pics autour de 1 h–1,5 h sans sur-lissage.
+La médiane est autour de 1,25 h, et la moitié des séances se situe approximativement entre \~1,05 et \~1,45 h. Les durées extrêmes vont d’environ 0,5 h à 2 h. L’histogramme montre une concentration nette entre 1 h et 1,5 h, avec quelques séances plus courtes et plus longues : la variabilité est réelle mais reste dans une plage plausible. Ca pourrait par exemple être une recommandation de la salle de sport de faire une séance courte, deux séances moyennes et une séance longue par semaine. Les 30 bins sont pertinentes car la variable est bornée sur un intervalle court et continu. Elles permettent de bien visualiser les pics autour de 1 h–1,5 h sans sur-lissage.
 
 ```{r}
+#| echo: false
 # 1) Violin + boxplot
 p_violin_box <- ggplot(SalleDeSport, aes(x = "", y = duration)) +
   geom_violin(fill = "#9ECAE1", alpha = 0.8, trim = FALSE) +
@@ -259,6 +261,7 @@ p_hist_med <- ggplot(SalleDeSport, aes(x = duration)) +
 Le boxplot indique une médiane proche de 900 kcal, avec un intervalle interquartile d'environ 750 à 1100 kcal. On voit plusieurs valeurs atypiques élevées (au-delà de 1600/1750 kcal), ce qui indique des séances exceptionnellement énergivores, peut être que les niveaux experts ou les personnes plus grandes consomment plus d'énergie. Cette structure est cohérente avec une distribution asymétrique à droite : beaucoup de séances "standard", et quelques séances très intenses. L’histogramme n'est pas symétrique. Les 30 bins sont très bien adaptés ici, ils révèlent la forme globale, tout en conservant la visibilité de la queue à droite. Un nombre plus faible masquerait les extrêmes.
 
 ```{r}
+#| echo: false
 # 1) Violin + boxplot
 p_violin_box <- ggplot(SalleDeSport, aes(x = "", y = calories)) +
   geom_violin(fill = "#9ECAE1", alpha = 0.8, trim = FALSE) +
@@ -311,12 +314,12 @@ p_hist_med <- ggplot(SalleDeSport, aes(x = calories)) +
   )
 ```
 
-
 #### Masse grasse (fat)
 
 La médiane est autour de 26%, avec la majorité des valeurs entre 21% et 29%. L’étendue va approximativement de 10% à 35%. Le boxplot ne montre pas de points atypiques extrêmes ; l’ensemble semble relativement homogène, avec une dispersion modérée. L’histogramme semble légèrement multimodal, ce qui peut refléter des différences physiologiques (genres ou niveaux). Les 20 bins sont acceptables, en avoir plus n'apporte pas plus d'informations.
 
 ```{r}
+#| echo: false
 # 1) Violin + boxplot
 p_violin_box <- ggplot(SalleDeSport, aes(x = "", y = fat)) +
   geom_violin(fill = "#9ECAE1", alpha = 0.8, trim = FALSE) +
@@ -374,6 +377,7 @@ p_hist_med <- ggplot(SalleDeSport, aes(x = fat)) +
 La médiane est autour de 2,6 L, et l’intervalle interquartile est de 2,2 à 3,1 L. L’étendue est d’environ 1,5 à 3,7 L. La distribution paraît assez concentrée autour de 2–3 L, sans valeurs extrêmes marquantes. Toutefois on remarque des pics marqués autour de certaines valeurs (notamment 2,7 L et 3,5 L), suggérant des valeurs arrondies ou/et des comportements standardisés (bouteilles, consignes).
 
 ```{r}
+#| echo: false
 # 1) Violin + boxplot
 p_violin_box <- ggplot(SalleDeSport, aes(x = "", y = water)) +
   geom_violin(fill = "#9ECAE1", alpha = 0.8, trim = FALSE) +
@@ -431,6 +435,7 @@ p_hist_med <- ggplot(SalleDeSport, aes(x = water)) +
 On observe une médiane de 24, avec la moitié des individus entre 20 et 28. En revanche, on observe de nombreux outliers élevés (au-delà de 40 et jusqu’à 50), ce qui traduit une forte asymétrie à droite : la majorité des individus est dans une zone "classique", mais une minorité présente des IMC très élevés. Cette queue droite importante confirme la présence d'individus en surpoids ou obésité, déjà visible sur le boxplot via de nombreux outliers. Cela rejoint les graphiques sur les poids où on avait remarqué déjà la présence d'outlier avec des individus bien au delà de 100kg.
 
 ```{r}
+#| echo: false
 # 1) Violin + boxplot
 p_violin_box <- ggplot(SalleDeSport, aes(x = "", y = bmi)) +
   geom_violin(fill = "#9ECAE1", alpha = 0.8, trim = FALSE) +
@@ -490,6 +495,7 @@ p_hist_med <- ggplot(SalleDeSport, aes(x = bmi)) +
 #### Le genre
 
 ```{r}
+#| echo: false
 ggplot(SalleDeSport, aes(x=gender, fill=gender)) +
 geom_bar(alpha=0.8) +
 scale_fill_manual(values=c("#4C72B0","#DD8452")) +
@@ -497,11 +503,12 @@ labs(title="Effectif par genre", x="Genre", y="Nombre d'individus") +
 theme_minimal() + theme(legend.position="none")
 ```
 
-Le diagramme en barres montre une répartition relativement équilibrée entre hommes et femmes, avec une légère majorité d’hommes dans l’échantillon. Cette distribution suggère une population globalement mixte, ce qui limite le risque de biais lié à une surreprésentation marquée d’un genre.
+Le diagramme en barres montre une répartition relativement équilibrée entre hommes et femmes, avec une légère majorité d'hommes dans l'échantillon. Cette distribution suggère une population globalement mixte, ce qui limite le risque de biais lié à une surreprésentation marquée d'un genre.
 
 #### Le niveau
 
 ```{r}
+#| echo: false
 ggplot(SalleDeSport, aes(x=level, fill=level)) +
 geom_bar(alpha=0.8) +
 scale_fill_viridis_d(option = "C") +
@@ -509,17 +516,18 @@ labs(title="Effectif par niveau d'expérience", x="Niveau", y="Nombre d'individu
 theme_minimal() + theme(legend.position="none")
 ```
 
-La répartition par niveau d’expérience met en évidence une majorité d’individus de niveau intermédiaire et de débutants. Les experts constituent le groupe le moins représenté. Cette structure est cohérente avec un contexte de pratique sportive, où les niveaux intermédiaires sont généralement les plus fréquents, tandis que les niveaux experts restent plus rares.
+La répartition par niveau d'expérience met en évidence une majorité d'individus de niveau intermédiaire et de débutants. Les experts constituent le groupe le moins représenté. Cette structure est cohérente avec un contexte de pratique sportive, où les niveaux intermédiaires sont généralement les plus fréquents, tandis que les niveaux experts restent plus rares.
 
-Ces distributions marginales fournissent un premier aperçu de la structure de l’échantillon. Elles serviront de référence pour l’analyse bidimensionnelle, notamment afin d’interpréter correctement les comparaisons entre groupes.
+Ces distributions marginales fournissent un premier aperçu de la structure de l'échantillon. Elles serviront de référence pour l'analyse bidimensionnelle, notamment afin d'interpréter correctement les comparaisons entre groupes.
 
 ## Analyse bidimensionnelle
 
 ### Corrélations entre variables quantitatives
 
-On explore à présent les relations entre les variables quantitatives avec des matrices de corrélations. 
+On explore à présent les relations entre les variables quantitatives avec des matrices de corrélations.
 
 ```{r}
+#| echo: false
 num_vars <- c("calories","water","duration","weight","bmi","height","fat")
 corr_matrix <- cor(SalleDeSport[, num_vars])
 corrplot(corr_matrix, method="ellipse", addCoef.col="black", tl.col="black", tl.srt=45, 
@@ -575,73 +583,54 @@ Le body-fat se distingue par des corrélations négatives marquées avec la dur�
 
 Enfin, il est étonnant de voir que le body fat n'est pas corrélé au poids ou à l'IMC. Cette variable n'augmente donc pas mécaniquement avec le poids, surtout dans une population sportive où la masse musculaire peut représenter une part importante du poids total. Cette observation avait déjà été faire lors de l'expérience super-size me. Le sujet n'avait pas prit beaucoup de poids mais était quand même devenu en très mauvaise santé, notamment à cause de son body-fat (et beaucoup d'autres troubles liés à la junk-food).
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Un nuage de points générique calories vs duration coloré par genre permet de visualiser ces effets :
-
-Rédaction
-```{r}
-ggplot(SalleDeSport, aes(x=duration, y=calories, color=gender)) +
-geom_point(alpha=0.6) +
-labs(title="Calories brûlées vs Durée de séance (couleur par genre)",
-x="Durée (heures)", y="Calories") +
-theme_minimal()
-```
-
-On s’attend à une relation (approx.) linéaire ascendante : plus la durée est grande, plus les calories sont élevées. Les points peuvent différer légèrement selon le genre (par exemple, les hommes peuvent brûler davantage de calories pour une même durée que les femmes, en raison de différences physiologiques). [À compléter : commenter l'aspect du nuage obtenu]
 
 ### Variables quantitatives en fonction de variables qualitatives
 
-On compare les distributions des variables quantitatives selon les catégories de gender et de level à l’aide de boxplots.
+Comparons les distributions des variables quantitatives selon les catégories de gender et de level à l'aide de boxplots.
 
-Rédaction
-Exemple : poids par genre et par niveau
+```{r}
+#| echo: false
+vars_quant <- c("weight","height","duration","calories","fat","water","bmi")
 
-ggplot(SalleDeSport, aes(x=gender, y=weight, fill=gender)) +
-geom_boxplot() +
-scale_fill_manual(values=c("#6BAED6","#FDB0C0")) +
-labs(title="Poids par genre", x="Genre", y="Poids (kg)") +
-theme_minimal() + theme(legend.position="none")
+for (v in vars_quant) {
 
-ggplot(SalleDeSport, aes(x=level, y=weight, fill=level)) +
-geom_boxplot() +
-scale_fill_brewer(palette="Greens") +
-labs(title="Poids par niveau d'expérience", x="Niveau", y="Poids (kg)") +
-theme_minimal() + theme(legend.position="none")
+  p_gender <- ggplot(SalleDeSport, aes(x = gender, y = .data[[v]], fill = gender)) +
+    geom_boxplot() +
+    scale_fill_manual(values = c("#4C72B0", "#DD8452")) +
+    theme_minimal() +
+    labs(title = paste(v, "par genre"), x = "Genre", y = v) +
+    theme(legend.position = "none")
 
-Il faudrait répéter ce genre de graphiques pour chaque variable quantitative (height, duration, calories, fat, water, bmi) en fonction de gender et de level. Ces boxplots révèlent, par exemple :
+  p_level <- ggplot(SalleDeSport, aes(x = level, y = .data[[v]], fill = level)) +
+    geom_boxplot() +
+    scale_fill_brewer(palette = "Greens") +
+    theme_minimal() +
+    labs(title = paste(v, "par niveau"), x = "Niveau", y = v) +
+    theme(legend.position = "none")
 
-Par genre : on peut s'attendre à ce que la médiane du poids et de la taille soit plus élevée pour les hommes que pour les femmes. En revanche, la masse grasse (fat) est souvent plus élevée chez les femmes.
+  print((p_gender | p_level) +
+          plot_annotation(title = paste("Boxplots de", v, "selon genre et niveau")))
+}
+```
 
-Par niveau : il peut être intéressant de voir si les niveaux d'expérience diffèrent en termes de durée de séance (peut-être les experts s'entraînent plus longtemps ou moins longtemps ?), ou en termes de calories brûlées.
+Entre les hommes et les femmes, on observe une différence de poids notable. Celle-ci va de paire avec la taille. Bien que nous n'avions pas relevé de corrélation entre ces deux variables en séparant par sexe, le coefficient était tout de même de 0.37 sur la matrice mixte. Ces trois variables sont donc liées mais il n'y a pas d'observation particulière à faire à ce niveau là. La durée des séances et le nombre de calories dépensées ne semblent pas liées au sexe. Nous avions vu que ces deux variables étaient fortement corrélées entre elles, d'où les observations similaires lorsqu'on les observe indépendamment. On relève toutefois la présence d'outliers chez les deux genres pour la variable calories et non pour la durée. Ainsi, certains individus consomment beaucoup plus de calories. Selon les corrélations établies précédemment, on s'attend à ce que ces mêmes individus aient des séances plus longues et un body-fat plus bas. Et en effet, sur les boxplot du body fat, nous retrouvons ces outliers. Une autre observation plus notable est que les femmes ont un body-fat nettement plus élevé. Il peut y avoir plusieurs explications à cela, et le jeu de données n'inclue pas certaines variables potentiellement clé à ce sujet telles que la maternité ou l'age. Toutefois, une recherche sur google scholar tend à confirmer cette observation. Le graphique suivant, allant de paire avec la corrélation inverse entre la consommation d'eau et le body fat établie précédemment, montre que les femmes semblent consommer moins d'eau. On avais toutefois déjà observé que les personnes avec un body-fat plus élevé consommaient moins d'eau. De plus, cette corrélation restait vraie quand on séparait les matrices par sexe, c'est donc le lien eau-fat plutôt que eau-genre que l'on gardera. Enfin, l'IMC par genre. On remarque la présence de certaines personnes en situation d'obésité sévère et morbide seulement chez les hommes, tandis qu'il n'y a pas de femmes avec un IMC supérieur à 35. La tendance au sur-poids est globalement plus prononcée chez les hommes que chez les femmes. Cette tendance est inverse a celle observée sur le body-fat.
 
-[À compléter : pour chaque graphique, décrire les différences de médiane et d'étendue observées]
+Sur le premier graphique, le poids ne semble pas lié au niveau, car les 3 niveaux ont leur intervalle inter-quartile entre 57 et 87. Toutefois, il est notable que les experts ont un poids clairement borné entre 55 et 90, ce qui n'est pas le cas des débutants et des intermédiaires. Ainsi, une tendance se dessine tout de même quand au poids qu'aurait un expert. La taille également semble non liée au niveau. On remarque toutefois que l'intervalle semble s’élargir quand le niveau augmente. Mais on avait observé sur le premier violin plot de la taille un double pic dans la distribution. Cela pourrait donc être un biais résiduel dû au genre. On remarque une tendance claire et prononcée au niveau de la durée des séances. Les experts ont tous des séances longues, tandis que les intermédiaires font des séances moins longues et les débutant encore moins. Étant donné la corrélation forte entre la durée des séances et les calories dépensées, on retrouve cette même tendance sur le graphique suivant, le niveau allant croissant avec les calories dépensées. Cette tendance semble moins prononcée pour la consommation d'eau. Elle l'est malgré tout, on la visualise simplement un peu moins parce que tout le monde consomme globalement des quantités d'eau comparables. Toutefois, on remarque encore que les experts (on le sait déjà, faisant des séances plus longues et plus énergivores) consomment plus d'eau que les débutants et intermédiaires. Cette tendance est toutefois liés aux deux précédentes, il n'y a pas de lien de causalité notable entre la consommation d'eau et l'expertise dans un sport. Le body-fat quand à lui fortement corrélé à l'expertise. Il semble même se dessiner une condition nécessaire et suffisante car pas un seul adhérent avec un body-fat entre 12 et 18 n'est débutant ou intermédiaire, et tous les gens ayant un body-fat dans cet intervalle sont classés experts. À l'inverse, les gens ayant une masse grasse plus élevée (de 20 à 35%) seront forcément débutant ou intermédiaire. Cette observation est tout à fait cohérente avec ce qui se trouve dans la littérature (Sedukin D. V. et al., 2025), (Duncan M. J. et al., 2016). On observe également la non présence d'outliers, contrairement au graphique sur l'IMC. En effet, sur ce dernier on retrouve les outliers en situation d'obésité grave que nous avions identifié précédemment. Tandis que les experts ne sont que rarement en situation d'obésité. En effet, un IMC de 35 est déjà considéré comme extrême pour un expert. La boite est également beaucoup plus fine, plaçant l'IMC d'un expert entre la fine fourchette de 23 à 27 avec une tolérance beaucoup plus réduite que pour les débutants et intermédiaires. Pour ces derniers, l'écart inter quartile est entre 20 et 30 avec une moustache s'étendant de 10 à 43, ce qui inclut les situations de maigreur et plusieurs nuances d'obésité et de sur-poids.
 
-Association quantitatives vs qualitatives (Eta²)
+En conclusion, l'expertise se distingue par une masse grasse réduite (12-18 %). Bien que le genre influence la répartition des masses grasses et les extrêmes de l'IMC, la performance reste dictée par la durée des séances et l'intensité de la dépense calorique. Ces résultats valident la littérature scientifique en confirmant que l'assiduité à l'entraînement est le principal levier pour optimiser sa santé physique.
 
-Pour chaque variable quantitative, on calcule le rapport de corrélation η² vis-à-vis de chaque variable qualitative (gender et level) à l’aide de la fonction eta2() du package BioStatR.
+### Association quantitatives vs qualitatives ($\eta^2$)
 
-Rédaction
-if (!require(BioStatR)) install.packages("BioStatR")
+Pour chaque variable quantitative, on calcule le rapport de corrélation $\eta^2$ vis-à-vis de chaque variable qualitative (gender et level) à l’aide de la fonction eta2() du package BioStatR.
 
-library(BioStatR)
+```{r}
 quanti_vars <- c("weight","height","duration","calories","fat","water","bmi")
 eta_gender <- sapply(quanti_vars, function(v) eta2(SalleDeSport[[v]], SalleDeSport$gender))
 eta_level <- sapply(quanti_vars, function(v) eta2(SalleDeSport[[v]], SalleDeSport$level))
 eta_tab <- data.frame(Variable = quanti_vars, Eta2_Gender = eta_gender, Eta2_Level = eta_level)
 print(eta_tab)
+```
 
 Le tableau obtenu donne, pour chaque variable quantitive, la part de variance expliquée par le genre ou par le niveau. Par exemple :
 
@@ -651,23 +640,19 @@ Une valeur élevée de η² pour duration vs level suggérerait que la durée mo
 
 Des valeurs proches de 0 (pour water vs gender, par exemple) signifieraient une absence de lien fort.
 
-[À compléter : interprésenter les valeurs spécifiques d'η² et en tirer des conclusions sur quelles relations sont fortes]
+\[À compléter : interprésenter les valeurs spécifiques d'η² et en tirer des conclusions sur quelles relations sont fortes\]
 
 Variables qualitatives entre elles
 
 Enfin, on examine l’association entre les deux variables qualitatives gender et level.
 
-Rédaction
-Table de contingence
+Rédaction Table de contingence
 
-tab_genre_niveau <- table(SalleDeSport$gender, SalleDeSport$level)
-tab_genre_niveau
-addmargins(tab_genre_niveau) # ajoute les totaux lignes/colonnes
+tab_genre_niveau \<- table(SalleDeSport$gender, SalleDeSport$level) tab_genre_niveau addmargins(tab_genre_niveau) \# ajoute les totaux lignes/colonnes
 
 Profils-lignes et profils-colonnes
 
-prop.table(tab_genre_niveau, 1) # proportions par genre (lignes)
-prop.table(tab_genre_niveau, 2) # proportions par niveau (colonnes)
+prop.table(tab_genre_niveau, 1) \# proportions par genre (lignes) prop.table(tab_genre_niveau, 2) \# proportions par niveau (colonnes)
 
 Mosaic plot
 
@@ -675,7 +660,7 @@ mosaicplot(tab_genre_niveau, color=TRUE, main="Mosaic : Genre vs Niveau")
 
 On obtient ainsi la table de contingence et les marges. Les profils-lignes (prop.table(...,1)) montrent la répartition proportionnelle des niveaux pour chaque genre : par exemple, chez les hommes, X% sont débutants, Y% intermédiaires, Z% experts. Les profils-colonnes (prop.table(...,2)) indiquent la proportion d'hommes et de femmes parmi les débutants, etc. Le mosaic plot met en évidence visuellement ces proportions.
 
-[À compléter : commenter les résultats. Par exemple, si la proportion d'hommes est plus grande parmi les experts que parmi les débutants, cela se traduirait par un décalage visible. Sinon, on constate une répartition uniforme, etc.]
+\[À compléter : commenter les résultats. Par exemple, si la proportion d'hommes est plus grande parmi les experts que parmi les débutants, cela se traduirait par un décalage visible. Sinon, on constate une répartition uniforme, etc.\]
 
 Conclusion partielle
 
@@ -683,69 +668,13 @@ En résumé, cette analyse descriptive montre les caractéristiques principales 
 
 La suite du rapport pourra compléter l'interprétation détaillée de chaque graphique produit, ainsi que l'exploration de relations plus fines entre les variables (test d'indépendance entre qualitatives, analyse de covariance, etc.). Chaque choix de représentation a été justifié par le type de variable et l'intérêt d'illustrer visuellement la distribution ou la relation étudiée.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ces graphiques (à exécuter) montreront la répartition : par exemple, si les hommes représentent 55% et les femmes 45% de l'échantillon, ou si 50% sont débutants, 30% intermédiaires, 20% experts. [À compléter : indiquer les pourcentages exacts et observations principales sur ces distributions]
+Ces graphiques (à exécuter) montreront la répartition : par exemple, si les hommes représentent 55% et les femmes 45% de l'échantillon, ou si 50% sont débutants, 30% intermédiaires, 20% experts. \[À compléter : indiquer les pourcentages exacts et observations principales sur ces distributions\]
 
 # Analyse en composantes principales/multidimentionnelle
 
 On fait quelques geom plot pour commencer a essayer d'observer des trucs dans e jeu de données :
 
-```{r}
-ggplot(data=SalleDeSport)+
-   geom_point(aes(x=weight,y=height,color=fat))
-
-# Histogramme
-ggplot(SalleDeSport, aes(x=calories)) +
-  geom_histogram(bins=30, fill="steelblue", alpha=0.7) +
-  labs(title="Distribution des calories brûlées", x="Calories", y="Fréquence")
-
-# Boxplot par niveau
-ggplot(SalleDeSport, aes(x=factor(level), y=duration, fill=factor(level))) +
-  geom_boxplot() +
-  labs(title="Durée des séances par niveau", x="Niveau", y="Durée (heures)")
-
-# Nuage de points
-ggplot(SalleDeSport, aes(x=duration, y=calories, color=gender)) +
-  geom_point(alpha=0.6) +
-  labs(title="Calories brûlées vs Durée de séance", x="Durée (heures)", y="Calories")
-
-
-```
-
-
-
-
-rerésenter chaque variable quantative en fonction de chaque variable qualitative (genre et niveau) (dans des boxplot colorés de maniere coherente) faire la matrice de correlation pour toutes les variables qualitatives explorer les differentes combinaisons afin de determiner les variables fortement liées et inversement
-
 A l'aide de la fonction `eta2()` de la librairie `BioStatR`, calculez le rapport de corrélation $\eta^2$ entre chaque variable quantitative et chaque variable qualitative. Commentez.(toutes les combinaisons)
-
 
 **Question :** Analysez la table de contingence entre les deux variables qualitatives **Type** et **Qualite** avec la commande `table()`. Ajoutez les effectifs marginaux avec la commande `addmargins()`.
 
@@ -759,16 +688,14 @@ A l'aide de la fonction `eta2()` de la librairie `BioStatR`, calculez le rapport
 # A COMPLETER
 ```
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
 ## Running Code
 
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-```{r}
-1 + 1
+```{python3}
+print(1 + 1)
+for i in range(12):
+  print(i)
 ```
 
 You can add options to executable code like this
@@ -780,3 +707,9 @@ You can add options to executable code like this
 ```
 
 The `echo: false` option disables the printing of code (only output is displayed).
+
+# Bibliographie
+
+-   Nom .P et al., ANNÉE, \[en ligne, consulté le XX YYYYYYYY\] : lien
+-   Sedukin D. V. et al., 2025, \[en ligne, consulté le 29 Décembre\] : https://vpbim.com.ua/wp-content/uploads/2025/10/54.pdf
+-   Duncan M. J. et al., 2016, \[en ligne, consulté le 29 Décembre\] : https://www.tandfonline.com/doi/abs/10.1080/02640414.2016.1258483
