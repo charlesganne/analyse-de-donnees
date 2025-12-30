@@ -32,6 +32,12 @@ library(forcats) # facteurs
 library(reshape2) # /melt pour restructurer
 library(BioStatR) # eta2
 library(patchwork)
+
+# ACP
+library(FactoMineR)
+library(factoextra)
+# juste pour le fun pour tracer l'acp en 3d, mais à supprimer pour le rendu finale 
+library(plotly)
 ```
 
 # Chargement et découverte du jeu de données
@@ -528,20 +534,16 @@ On explore à présent les relations entre les variables quantitatives avec des 
 
 ```{r}
 #| echo: false
-num_vars <- c("calories","water","duration","weight","bmi","height","fat")
-corr_matrix <- cor(SalleDeSport[, num_vars])
+
+variables_quantitatives <- c("calories","water","duration","weight","bmi","height","fat")
+corr_matrix <- cor(SalleDeSport[, variables_quantitatives])
 corrplot(corr_matrix, method="ellipse", addCoef.col="black", tl.col="black", tl.srt=45, 
          title = paste("Matrice de corrélation"), 
          mar = c(0, 0, 2, 0))
 
-
-
-# Variables quantitatives
-vars_quant <- c("calories","water","duration","weight","bmi","height","fat")
-
-# Fonction robuste pour corrélation
+# Fonction pour corrélation
 cor_mat_safe <- function(df) {
-  df <- df[, intersect(vars_quant, names(df)), drop = FALSE]
+  df <- df[, intersect(variables_quantitatives, names(df)), drop = FALSE]
   for (v in names(df)) df[[v]] <- suppressWarnings(as.numeric(df[[v]]))
   keep <- sapply(df, function(x) sum(!is.na(x)) >= 2 && sd(x, na.rm = TRUE) > 0)
   df <- df[, keep, drop = FALSE]
@@ -591,9 +593,8 @@ Comparons les distributions des variables quantitatives selon les catégories de
 
 ```{r}
 #| echo: false
-vars_quant <- c("weight","height","duration","calories","fat","water","bmi")
 
-for (v in vars_quant) {
+for (v in variables_quantitatives) {
 
   p_gender <- ggplot(SalleDeSport, aes(x = gender, y = .data[[v]], fill = gender)) +
     geom_boxplot() +
@@ -620,14 +621,13 @@ Sur le premier graphique, le poids ne semble pas lié au niveau, car les 3 nivea
 
 En conclusion, l'expertise se distingue par une masse grasse réduite (12-18 %). Bien que le genre influence la répartition des masses grasses et les extrêmes de l'IMC, la performance reste dictée par la durée des séances et l'intensité de la dépense calorique. Ces résultats valident la littérature scientifique en confirmant que l'assiduité à l'entraînement est le principal levier pour optimiser sa santé physique.
 
-### Association quantitatives vs qualitatives ($\eta^2$)
+faire eta ² si le temps \### Association quantitatives vs qualitatives ($\eta^2$)
 
 Pour chaque variable quantitative, on calcule le rapport de corrélation $\eta^2$ vis-à-vis de chaque variable qualitative (gender et level) à l’aide de la fonction eta2() du package BioStatR.
 
 ```{r}
-quanti_vars <- c("weight","height","duration","calories","fat","water","bmi")
-eta_gender <- sapply(quanti_vars, function(v) eta2(SalleDeSport[[v]], SalleDeSport$gender))
-eta_level <- sapply(quanti_vars, function(v) eta2(SalleDeSport[[v]], SalleDeSport$level))
+eta_gender <- sapply(variables_quantitatives, function(v) eta2(SalleDeSport[[v]], SalleDeSport$gender))
+eta_level <- sapply(variables_quantitatives, function(v) eta2(SalleDeSport[[v]], SalleDeSport$level))
 eta_tab <- data.frame(Variable = quanti_vars, Eta2_Gender = eta_gender, Eta2_Level = eta_level)
 print(eta_tab)
 ```
@@ -670,7 +670,165 @@ La suite du rapport pourra compléter l'interprétation détaillée de chaque gr
 
 Ces graphiques (à exécuter) montreront la répartition : par exemple, si les hommes représentent 55% et les femmes 45% de l'échantillon, ou si 50% sont débutants, 30% intermédiaires, 20% experts. \[À compléter : indiquer les pourcentages exacts et observations principales sur ces distributions\]
 
-# Analyse en composantes principales/multidimentionnelle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Analyse en composantes principales
+
+L'analyse en composantes principales est une méthode qui consiste à transformer des variables liées entre elles (corrélées) en nouvelles variables décorrélées les unes des autres. Ces nouvelles variables sont nommées "composantes principales" ou axes principaux. Elle permet de résumer l'information en réduisant le nombre de variables. 
+
+Dans l'ensemble, les variables étudiées décrivent : la morphologie (poids, taille, IMC, masse grasse) ainsi que l'intensité et la pratique sportive (durée, calories brûlées, niveau, eau consommée). On a déjà vu par exemple que la durée de la séance et les calories dépensées étaient fortement corrélé. Idem pour le poids et l'IMC (ces deux données sont d'ailleurs redondantes car l'IMC est calculé en fonction du poid et de la taille). Les variables n’ont pas la même unité (kg, %, heures, calories, ...). On fait donc une ACP centrée réduite, sinon les calories ou le poids domineraient toutes les autres variables.
+
+```{r}
+
+# ACP centrée-réduite
+res_pca <- PCA(
+  SalleDeSport,
+  scale.unit = TRUE,
+  quali.sup = c(which(names(SalleDeSport)=="gender"),
+                which(names(SalleDeSport)=="level")),
+  graph = FALSE
+)
+
+# Valeurs propres (choix du nombre d’axes)
+#res_pca$eig
+fviz_eig(res_pca, addlabels = TRUE)
+
+```
+
+Les deux premières composantes principales expliquent 41.5% + 26.8% = 68,3 % de la variance totale, ce qui permet déjà une représentation satisfaisante des données. La troisième composante explique néanmoins 17,6 % de la variance. Elle n'est donc pas complètement négligeable. Ainsi, nous nous concentrerons principalement sur le premier plan factoriel (axes 1 et 2), tout en gardant à l'esprit l'apport potentiel de la troisième composante.
+
+```{r}
+
+# cercle des corrélations
+fviz_pca_var(res_pca,
+             repel = TRUE)
+
+# matrice des corrélations
+cor_3axes <- res_pca$var$cor[, 1:3, drop = FALSE]
+
+corrplot(
+  cor_3axes,
+  method = "ellipse",
+  addCoef.col = "black",
+  number.cex = 0.8,
+  tl.cex = 0.9
+)
+
+```
+
+Dans un premier temps, on remarque que les flèches des variables weight, duration, calories, water, bmi sont longues Ces variables sont donc bien représentées sur le plan factoriel. La flèche de height est plus proche du centre, elle est donc moins bien représentée par les deux premières composantes principales.
+
+L'axe des abscisse (Dim1, 41.5 %) est corrélé plus fortement à calories (0.80), duration (0.73), water (0.73) et fat (-0.83). Ainsi, cette composante principale rassemble les variables durée, calories et water, qui traduisent de l'intensité d'un entrainement, et les oppose à la variable masse grasse. C'est une observation que nous avions faite précédemment, les personnes avec une masse grasse plus élevées font des séances moins intenses.
+
+L'axe des ordonnées est principalement corrélé à l'IMC et au poids, les deux flèches sont très proches. Il est également négativement corrélé à la durée et aux calories. Cela nous permet d'opposer la corpulence des individus et leur endurance.
+
+Enfin, la troisième composante principale est corrélée à la taille et à l'imc. Cela est cohérent car l'imc est calculé en fonction de la taille. De plus la taille est assez faiblement corrélé aux deux premières composantes principales (0.35 et 0.20). Son influence sur les performances sportives et la corpulence est donc limitée. Cela justifie que l'on ne garde que les 2 premières composantes principales.
+
+En conclusion, le premier axe oppose des profils à forte intensité d'entraînement à des profils à forte masse grasse. Le second axe traduit principalement des différences morphologiques liées au poids et à l'IMC. La troisième composante est surtout associée à la taille et apporte une information complémentaire.
+
+```{r}
+
+# Graphique des individus
+fviz_pca_ind(res_pca,
+             geom = "point",
+             habillage = "gender",
+             addEllipses = TRUE)
+
+# Autre lecture intéressante :
+fviz_pca_ind(res_pca, col.ind = "cos2")
+
+
+
+
+#############################################
+# graphique en 3d pour le fun (et pour preshot le clustering)
+
+coords <- as.data.frame(res_pca$ind$coord[, 1:3])
+coords$gender <- SalleDeSport$gender
+plot_ly(
+  coords,
+  x = ~Dim.1,
+  y = ~Dim.2,
+  z = ~Dim.3,
+  color = ~gender,
+  type = "scatter3d",
+  mode = "markers"
+)
+
+```
+
+
+5️⃣ Comment interpréter (exemples concrets)
+Axe 1 (exemple)
+
+L’axe 1 oppose des individus à forte intensité sportive (durée élevée, calories brûlées importantes, niveau élevé) à des individus moins actifs.
+
+Axe 2 (exemple)
+
+L’axe 2 est principalement lié à la morphologie corporelle, opposant des profils à IMC et masse grasse élevés à des profils plus secs.
+
+Variables qualitatives
+
+Les hommes apparaissent majoritairement du côté des valeurs élevées de calories brûlées, tandis que les femmes sont davantage associées à des pourcentages de masse grasse plus élevés.
+
+(adapte selon TES résultats)
+
+6️⃣ ACP à la main ou avec FactoMineR ?
+✅ Pour le rapport
+
+👉 FactoMineR uniquement
+
+C’est :
+
+standard académique,
+
+lisible,
+
+attendu par les correcteurs,
+
+reproductible.
+
+🧠 ACP à la main
+
+À faire seulement :
+
+si demandé explicitement,
+
+ou en annexe pédagogique (rare).
+
+Phrase parfaite :
+
+Les calculs sont réalisés à l’aide de la librairie FactoMineR, l’implémentation manuelle de l’ACP n’étant pas nécessaire dans un cadre d’analyse exploratoire appliquée.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 On fait quelques geom plot pour commencer a essayer d'observer des trucs dans e jeu de données :
 
