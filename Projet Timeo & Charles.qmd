@@ -41,6 +41,7 @@ library(factoextra)
 # Chargement et découverte du jeu de données
 
 Ce projet a pour objectif de mener l'étude descriptive uni- et bi-dimensionnelle du jeu de données `DataGym3MIC` disponible sous Moodle. Voici les 6 premières lignes du jeu de données pour s'en faire une prenière idée.
+
 ```{r}
 #| echo: false
 
@@ -792,8 +793,6 @@ A l'aide de la fonction `eta2()` de la librairie `BioStatR`, calculez le rapport
 
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
 
-
-
 You can add options to executable code like this
 
 ```{r}
@@ -809,3 +808,5 @@ The `echo: false` option disables the printing of code (only output is displayed
 -   Nom .P et al., ANNÉE, \[en ligne, consulté le XX YYYYYYYY\] : lien
 -   Sedukin D. V. et al., 2025, \[en ligne, consulté le 29 Décembre\] : https://vpbim.com.ua/wp-content/uploads/2025/10/54.pdf
 -   Duncan M. J. et al., 2016, \[en ligne, consulté le 29 Décembre\] : https://www.tandfonline.com/doi/abs/10.1080/02640414.2016.1258483
+
+Ceci est la premiere modificqtion de timeo
