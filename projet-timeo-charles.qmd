@@ -753,8 +753,7 @@ Cette approche permet de baser les groupes sur les dimensions structurantes iden
 
 ```{r}
 #| echo: true
-# Récupération des coordonnées des individus sur les 3 premiers axes (F1, F2, F3)
-# On retient 3 axes car nous avons vu que le 3ème (Taille) portait une information significative.
+
 donnees_acp <- res_pca$ind$coord[, 1:3]
 
 # Aperçu des données utilisées pour le clustering
@@ -769,15 +768,12 @@ Nous effectuons une CAH sur ces coordonnées factorielles en utilisant la distan
 #| echo: false
 #| fig-cap: "Dendrogramme de la classification hiérarchique sur composantes principales"
 
-# 1. Calcul de la matrice de distance sur les coordonnées ACP
 dist_acp <- dist(donnees_acp, method = "euclidean")
 
-# 2. Application de la CAH (Méthode de Ward)
 res_cah <- hclust(dist_acp, method = "ward.D2")
 
-# 3. Visualisation
 fviz_dend(res_cah, 
-          k = 3, # Choix de 3 classes (cohérent avec l'ACP et les profils attendus)
+          k = 3, 
           cex = 0.5, 
           k_colors = c("#2E9FDF", "#E7B800", "#FC4E07"),
           rect = TRUE,
@@ -788,7 +784,7 @@ fviz_dend(res_cah,
 
 ### **Choix du nombre de classes**
 
-L'observation du dendrogramme suggère un découpage naturel en **3 classes**, correspondant à une perte d'inertie significative (saut important dans la hauteur des branches). Ce choix semble cohérent avec la structure attendue (débutant, intermédiaire, expert) ou les profils morphologiques identifiés lors de l'ACP.
+Le dendrogramme montre un saut d'inertie majeur lors du passage de 3 à 2 classes. Nous retenons donc une partition en **k=3 classes**. Ce choix est cohérent avec la structure de la variable `level` qui comporte 3 modalités (Débutant, Intermédiaire, Expert). Nous chercherons par la suite à vérifier si ces classes statistiques recouvrent effectivement ces niveaux d'expertise ou si elles révèlent une autre segmentation (ex: distinction Homme/Femme ou Morphologie).
 
 ## Méthode des K-means
 
@@ -798,14 +794,11 @@ Nous appliquons maintenant l'algorithme des K-means, toujours sur les coordonné
 #| echo: false
 #| fig-cap: "Partition K-means projetée sur le premier plan factoriel"
 
-set.seed(123) # Reproductibilité
-# K-means sur les coordonnées ACP
+set.seed(123) 
 res_kmeans <- kmeans(donnees_acp, centers = 3, nstart = 25)
 
-# Stockage des résultats
 SalleDeSport$cluster_kmeans <- factor(res_kmeans$cluster)
 
-# Visualisation directe sur le plan factoriel 1-2
 fviz_pca_ind(res_pca,
              geom = "point",
              col.ind = SalleDeSport$cluster_kmeans, # Coloriage selon les classes K-means
@@ -822,41 +815,42 @@ L'avantage de cette représentation est immédiat : les classes sont, par constr
 
 Comparons la partition obtenue par la CAH et celle des K-means.
 
-```{r}
-# --- CORRECTION DE L'ASSIGNATION DES CLUSTERS ---
+**Analyse de la stabilité des classes (Matrice de confusion) :**
 
-# 1. Récupération sécurisée des clusters CAH
-# On s'assure que 'grp_cah' (ou classes_cah) est bien un vecteur nommé
-# (Note: assurez-vous d'avoir utilisé cutree() juste avant)
+```{r}
 classes_cah <- cutree(res_cah, k = 3)
 
-# 2. Initialisation des colonnes dans le tableau principal
 SalleDeSport$cluster_cah <- NA
 SalleDeSport$cluster_kmeans <- NA
 
-# 3. Assignation par correspondance des noms de lignes (ROBUSTE)
-# Cela permet d'éviter l'erreur de longueur si des lignes ont sauté
 ids_a_classer <- rownames(donnees_acp)
 
 SalleDeSport[ids_a_classer, "cluster_cah"] <- factor(classes_cah)
 SalleDeSport[ids_a_classer, "cluster_kmeans"] <- factor(res_kmeans$cluster)
 
-# --- MAINTENANT LA TABLE DE CONFUSION FONCTIONNERA ---
-
-# On ne garde que les lignes où les deux clusters sont définis (pas de NA)
 table_comp <- table(
   CAH = SalleDeSport$cluster_cah, 
   Kmeans = SalleDeSport$cluster_kmeans
 )
 
 addmargins(table_comp)
-
-# Calcul de l'indice de Rand (optionnel)
-# library(mclust)
-# adjustedRandIndex(SalleDeSport$cluster_cah, SalleDeSport$cluster_kmeans)
 ```
 
-## **Croisement avec les variables qualitatives**
+En comparant la CAH et les K-means via la table de contingence, nous observons une stabilité remarquable pour deux groupes, mais une hésitation sur le troisième :
+
+-   **Le noyau dur (Diagonale forte) :**
+
+    -   La classe 1 de la CAH correspond parfaitement à la classe 2 des K-means (200 individus, 0 erreur). C'est un groupe très homogène et distinct.
+
+    -   La classe 3 de la CAH est quasi-identique à la classe 1 des K-means (179 individus sur 182).
+
+-   **La zone de flou (Classe centrale) :**
+
+    -   La classe 2 de la CAH est la plus volumineuse (591 individus) et semble être une classe "fourre-tout". L'algorithme des K-means, qui réalloue les individus pour optimiser les centres, a "nettoyé" cette classe : il a conservé 526 individus dans son Cluster 3, mais en a réassigné 39 vers le Cluster 1 et 26 vers le Cluster 2.
+
+**En conclusion,** la méthode des K-means a permis d'affiner la partition en "récupérant" des individus frontières mal classés par la méthode hiérarchique (qui ne peut pas revenir en arrière une fois un regroupement effectué). Nous privilégierons donc la partition K-means pour l'interprétation finale.
+
+## Croisement et Profilage
 
 ```{r}
 #| echo: false
@@ -891,15 +885,36 @@ p2 <- ggplot(SalleDeSport, aes(x = cluster_kmeans, fill = gender)) +
        fill = "Genre",
        title = "Genres par Cluster") +
   theme_minimal() +
-  # On laisse ggplot choisir les couleurs de base pour éviter le conflit de noms,
-  # ou on utilise une palette standard :
   scale_fill_brewer(palette = "Pastel1") 
 
-# Affichage côte à côte
 grid.arrange(p1, p2, ncol = 2)
 ```
 
-Ce dernier graphique permet de valider si un cluster spécifique regroupe majoritairement les experts ou s'il est mixte, et de voir si les différences physiologiques (Homme/Femme) ont créé des classes distinctes (ce qui est probable vu l'axe 2 de l'ACP).
+En projetant la partition K-means sur le premier plan factoriel et en la croisant avec les variables qualitatives, nous pouvons dresser les portraits-robots des 3 clusters :
+
+-   **Cluster 1 (correspondant probablement aux Experts) :** Ce groupe rassemble les individus ayant des séances longues, une forte dépense calorique et un faible taux de masse grasse.
+
+-   **Cluster 3 (correspondant probablement à une morphologie spécifique/Surpoids) :** Ce groupe se caractérise par un IMC et un poids élevés, potentiellement corrélés à une pratique moins intense.
+
+-   **Cluster 2 (Les "Intermédiaires") :** Le groupe central et volumineux. Il rassemble la majorité des usagers, avec des performances et une morphologie moyennes. C'est ce manque de caractéristiques extrêmes qui rend ce groupe plus difficile à délimiter (comme vu dans la comparaison CAH/Kmeans).
+
+```{r}
+# Une fois votre clustering terminé (res_kmeans)
+SalleDeSport$cluster <- as.factor(res_kmeans$cluster)
+
+# 1. Description automatique des classes (variables quantitatives)
+# Calcule la moyenne des variables pour chaque cluster
+aggregate(cbind(weight, height, duration, calories, fat, bmi) ~ cluster, 
+          data = SalleDeSport, 
+          FUN = mean)
+
+# 2. Croisement avec les variables qualitatives (Tableaux croisés)
+print("Répartition des Niveaux par Cluster :")
+table(SalleDeSport$cluster, SalleDeSport$level)
+
+print("Répartition des Genres par Cluster :")
+table(SalleDeSport$cluster, SalleDeSport$gender)
+```
 
 # Bibliographie
 
