@@ -9,3 +9,5 @@ BioStatR
 patchwork
 FactoMineR
 factoextra
+dplyr
+tidyr
