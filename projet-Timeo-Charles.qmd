@@ -95,8 +95,8 @@ Pour chaque variable quantitative, on examine des statistiques descriptives (moy
 #| echo: false
 #| fig-cap: "Boxplots : poids, masse grasse, IMC et calories"
 #| label: fig-boxplot-poids-masse-grasse-imc-calories
-#| fig-width: 10
-#| fig-height: 5
+#| fig-width: 8
+#| fig-height: 4
 
 p_weight_box <- ggplot(SalleDeSport, aes(x = "", y = weight)) +
   geom_boxplot(width = 0.35, fill = "#3182BD", alpha = 0.8, outlier.alpha = 0.6) +
@@ -146,8 +146,8 @@ On observe une médiane de 24, avec la moitié des individus entre 20 et 28. En 
 #| echo: false
 #| fig-cap: "Histogrammes : masse grasse et IMC"
 #| label: fig-histogramme-fat-et-imc
-#| fig-width: 10
-#| fig-height: 5
+#| fig-width: 8
+#| fig-height: 4
 
 # Médianes
 med_fat <- median(SalleDeSport$fat, na.rm = TRUE)
@@ -209,8 +209,8 @@ Le boxplot (@fig-boxplot-poids-masse-grasse-imc-calories) indique une médiane p
 #| echo: false
 #| fig-cap: "Histogrammes : calories et consommation d'eau"
 #| label: fig-histogramme-calories-water
-#| fig-width: 10
-#| fig-height: 5
+#| fig-width: 8
+#| fig-height: 4
 
 # Médianes
 med_calories <- median(SalleDeSport$calories, na.rm = TRUE)
@@ -249,8 +249,8 @@ p_water_hist <- ggplot(SalleDeSport, aes(x = water)) +
 #| echo: false
 #| fig-cap: "Boxplots : eau, durée et taille"
 #| label: fig-boxplot-water-duration-height
-#| fig-width: 10
-#| fig-height: 5
+#| fig-width: 8
+#| fig-height: 4
 
 p_water_box <- ggplot(SalleDeSport, aes(x = "", y = water)) +
   geom_boxplot(width = 0.35, fill = "#3182BD", alpha = 0.8, outlier.alpha = 0.6) +
@@ -294,8 +294,8 @@ p_height_box <- ggplot(SalleDeSport, aes(x = "", y = height)) +
 #| echo: false
 #| fig-cap: "Histogrammes : durée des séances et taille des adhérents"
 #| label: fig-histogramme-duration-height
-#| fig-width: 10
-#| fig-height: 5
+#| fig-width: 8
+#| fig-height: 4
 
 # Médianes
 med_duration <- median(SalleDeSport$duration, na.rm = TRUE)
@@ -339,8 +339,8 @@ p_height_hist <- ggplot(SalleDeSport, aes(x = height)) +
 #| echo: false
 #| fig-cap: "Répartition des adhérents par genre et par niveau"
 #| label: fig-repartition-adherents-genre-niveau
-#| fig-width: 10
-#| fig-height: 5
+#| fig-width: 8
+#| fig-height: 4
 
 p_gender <- ggplot(SalleDeSport, aes(x = gender, fill = gender)) +
   geom_bar(alpha = 0.8) +
@@ -391,8 +391,8 @@ On explore à présent les relations entre les variables quantitatives avec des 
 #| echo: false
 #| fig-cap: "Matrices de corrélations, séparées par genres"
 #| label: fig-matrices-correlations-par-genres
-#| fig-width: 10
-#| fig-height: 5
+#| fig-width: 8
+#| fig-height: 4
 
 variables_quantitatives <- c("calories","water","duration","weight","bmi","height","fat")
 
@@ -456,77 +456,10 @@ Comparons les distributions des variables quantitatives selon le genre et le niv
 
 ```{r}
 #| echo: false
-#| fig-cap: "Boxplots des variables quantitatives selon le genre"
-#| label: fig-boxplots-variables-quantitatives-par-genre
-#| fig-width: 7
-#| fig-height: 6
-
-SalleDeSport_long <- tidyr::pivot_longer(
-  SalleDeSport,
-  cols = all_of(variables_quantitatives),
-  names_to = "variable",
-  values_to = "value"
-)
-
-SalleDeSport_long <- SalleDeSport %>%
-  pivot_longer(
-    cols = all_of(variables_quantitatives),
-    names_to = "variable",
-    values_to = "value"
-  )
-
-ggplot(
-  dplyr::filter(SalleDeSport_long, !variable %in% c("duration", "calories")),
-  aes(x = gender, y = value, fill = gender)
-) +
-  geom_boxplot() +
-  scale_fill_manual(values = c("#4C72B0", "#DD8452")) +
-  facet_wrap(~ variable, scales = "free_y") +
-  theme_minimal() +
-  labs(
-    x = "Genre",
-    y = NULL
-  ) +
-  theme(
-    legend.position = "none",
-    strip.text = element_text(face = "bold")
-  )
-```
-
-
-```{r}
-#| echo: false
-#| fig-cap: "Boxplots des variables quantitatives selon le niveau"
-#| label: fig-boxplots-variables-quantitatives-par-niveau
-#| fig-width: 7
-#| fig-height: 6
-
-ggplot(
-  SalleDeSport_long |> filter(variable != "height"),
-  aes(x = level, y = value, fill = level)
-) +
-  geom_boxplot() +
-  scale_fill_brewer(palette = "Greens") +
-  facet_wrap(~ variable, scales = "free_y") +
-  theme_minimal() +
-  labs(
-    x = "Niveau",
-    y = NULL
-  ) +
-  theme(
-    legend.position = "none",
-    strip.text = element_text(face = "bold")
-  )
-
-
-```
-
-```{r}
-#| echo: false
 #| fig-cap: "Calcul du rapport de corrélation eta2"
 #| label: fig-eta-deux
 #| fig-width: 10
-#| fig-height: 5
+#| fig-height: 4.5
 
 eta_gender <- sapply(variables_quantitatives, function(v) eta2(SalleDeSport[[v]], SalleDeSport$gender))
 eta_level <- sapply(variables_quantitatives, function(v) eta2(SalleDeSport[[v]], SalleDeSport$level))
@@ -562,26 +495,97 @@ ggplot(eta_long, aes(x = Variable, y = Eta2, fill = Facteur)) +
     plot.title = element_text(face = "bold", hjust = 0.5)
   )
 
-print(eta_tab)
+#print(eta_tab)
 ```
 
-Pour chaque variable quantitative, on calcule le rapport de corrélation $\eta^2$ vis-à-vis de chaque variable qualitative (genre et niveau) à l'aide de la fonction `eta2()`. Le tableau obtenu donne, pour chaque variable quantitative, la part de variance expliquée par le genre ou par le niveau. La grande valeur de $\eta^2$ entre height et gender indique que la taille diffère significativement entre hommes et femmes. La valeur élevée de $\eta^2$ entre duration et level suggère que la durée moyenne de séance varie selon l'expérience. Des valeurs proches de 0 (entre height et level, par exemple) signifient une absence de lien fort.
+Sur la @fig-eta-deux, pour chaque variable quantitative, on calcule le rapport de corrélation $\eta^2$ vis-à-vis de chaque variable qualitative (genre et niveau) à l'aide de la fonction `eta2()`. Les valeurs obtenues donnent, pour chaque variable quantitative, la part de variance expliquée par le genre ou par le niveau. Par exemple, la valeur élevée de $\eta^2$ entre duration et level suggère que la durée moyenne de séance varie selon l'expérience. Des valeurs proches de 0 (entre height et level, par exemple) signifient une absence de lien fort.
 
-Entre les hommes et les femmes, on observe une différence de poids notable. Celle-ci va de paire avec la taille. Bien que nous n'avions pas relevé de corrélation entre ces deux variables en séparant par sexe, le coefficient était tout de même de 0.37 sur la matrice mixte. Ces trois variables sont donc liées mais il n'y a pas d'observation particulière à faire à ce niveau là. La durée des séances et le nombre de calories dépensées ne semblent pas liées au sexe. Nous avions vu que ces deux variables étaient fortement corrélées entre elles sur la matrice mixte, d'où les observations similaires lorsqu'on les observe indépendamment. On relève toutefois la présence d'outliers chez les deux genres pour la variable calories et non pour la durée. Selon les corrélations établies précédemment, on s'attend à ce que ces mêmes individus aient des séances plus longues et une masse grasse plus basse. Et en effet, sur les boxplot de la masse grasse, nous retrouvions ces outliers. Une autre observation plus notable est que les femmes ont une masse grasse nettement plus élevé. Il peut y avoir plusieurs explications à cela, et le jeu de données n'inclue pas certaines variables potentiellement clé à ce sujet telles que la maternité ou l'age. Toutefois, une recherche sur google scholar tend à confirmer cette observation. Le graphique suivant, allant de paire avec la corrélation inverse entre la consommation d'eau et la masse grasse établie précédemment, montre que les femmes semblent consommer moins d'eau. On avais toutefois déjà observé que les personnes avec un masse grasse plus élevé consommaient moins d'eau. De plus, cette corrélation restait vraie quand on séparait les matrices par sexe, c'est donc le lien eau-fat plutôt que eau-genre que l'on gardera. Enfin, l'IMC par genre. On remarque la présence de certaines personnes en situation d'obésité sévère et morbide seulement chez les hommes, tandis qu'il n'y a pas de femmes avec un IMC supérieur à 35. La tendance au sur-poids est globalement plus prononcée chez les hommes que chez les femmes. Cette tendance est inverse a celle observée sur le masse grasse.
+```{r}
+#| echo: false
+#| fig-cap: "Boxplots des variables quantitatives selon le genre"
+#| label: fig-boxplots-variables-quantitatives-par-genre
+#| fig-width: 8
+#| fig-height: 5
 
-Sur le premier graphique, le poids ne semble pas lié au niveau, car les 3 niveaux ont leur intervalle inter-quartile entre 57 et 87. Toutefois, il est notable que les experts ont un poids clairement borné entre 55 et 90, ce qui n'est pas le cas des débutants et des intermédiaires. Ainsi, une tendance se dessine tout de même quand au poids qu'aurait un expert. La taille également semble non liée au niveau. On remarque toutefois que l'intervalle semble s’élargir quand le niveau augmente. Mais on avait observé sur le premier violin plot de la taille un double pic dans la distribution. Cela pourrait donc être un biais résiduel dû au genre. On remarque une tendance claire et prononcée au niveau de la durée des séances. Les experts ont tous des séances longues, tandis que les intermédiaires font des séances moins longues et les débutant encore moins. Étant donné la corrélation forte entre la durée des séances et les calories dépensées, on retrouve cette même tendance sur le graphique suivant, le niveau allant croissant avec les calories dépensées. Cette tendance semble moins prononcée pour la consommation d'eau. Elle l'est malgré tout, on la visualise simplement un peu moins parce que tout le monde consomme globalement des quantités d'eau comparables. Toutefois, on remarque encore que les experts (on le sait déjà, faisant des séances plus longues et plus énergivores) consomment plus d'eau que les débutants et intermédiaires. Cette tendance est toutefois liés aux deux précédentes, il n'y a pas de lien de causalité notable entre la consommation d'eau et l'expertise dans un sport. Le masse grasse quand à lui fortement corrélé à l'expertise. Il semble même se dessiner une condition nécessaire et suffisante car pas un seul adhérent avec un masse grasse entre 12 et 18 n'est débutant ou intermédiaire, et tous les gens ayant un masse grasse dans cet intervalle sont classés experts. À l'inverse, les gens ayant une masse grasse plus élevée (de 20 à 35%) seront forcément débutant ou intermédiaire. Cette observation est tout à fait cohérente avec ce qui se trouve dans la littérature (Sedukin D. V. et al., 2025), (Duncan M. J. et al., 2016). On observe également la non présence d'outliers, contrairement au graphique sur l'IMC. En effet, sur ce dernier on retrouve les outliers en situation d'obésité grave que nous avions identifié précédemment. Tandis que les experts ne sont que rarement en situation d'obésité. En effet, un IMC de 35 est déjà considéré comme extrême pour un expert. La boite est également beaucoup plus fine, plaçant l'IMC d'un expert entre la fine fourchette de 23 à 27 avec une tolérance beaucoup plus réduite que pour les débutants et intermédiaires. Pour ces derniers, l'écart inter quartile est entre 20 et 30 avec une moustache s'étendant de 10 à 43, ce qui inclut les situations de maigreur et plusieurs nuances d'obésité et de sur-poids.
+SalleDeSport_long <- tidyr::pivot_longer(
+  SalleDeSport,
+  cols = all_of(variables_quantitatives),
+  names_to = "variable",
+  values_to = "value"
+)
 
-En conclusion, l'expertise se distingue par une masse grasse réduite (12-18 %). Bien que le genre influence la répartition des masses grasses et les extrêmes de l'IMC, la performance reste dictée par la durée des séances et l'intensité de la dépense calorique. Ces résultats valident la littérature scientifique en confirmant que l'assiduité à l'entraînement est le principal levier pour optimiser sa santé physique.
+SalleDeSport_long <- SalleDeSport %>%
+  pivot_longer(
+    cols = all_of(variables_quantitatives),
+    names_to = "variable",
+    values_to = "value"
+  )
+
+ggplot(
+  dplyr::filter(SalleDeSport_long, !variable %in% c("duration", "calories")),
+  aes(x = gender, y = value, fill = gender)
+) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("#4C72B0", "#DD8452")) +
+  facet_wrap(~ variable, scales = "free_y") +
+  theme_minimal() +
+  labs(
+    x = "Genre",
+    y = NULL
+  ) +
+  theme(
+    legend.position = "none",
+    strip.text = element_text(face = "bold")
+  )
+```
+
+**Séparation par genre (@fig-boxplots-variables-quantitatives-par-genre)** : On observe une différence de poids notable entre les hommes et les femmes, en lien avec une différence de taille. La corrélation poids-taille est faible lorsqu'on sépare par sexe, mais restait modérée sur la matrice mixte (0.37). La durée des séances et les calories dépensées ne sont pas liées au sexe ($\eta^2$ proche de 0), bien que des outliers soient présents pour la variable calories chez les deux genres. La masse grasse est globalement plus élevée chez les femmes, qui consomment également moins d'eau. Toutefois, la corrélation négative entre consommation d'eau et masse grasse persiste lorsqu'on sépare par sexe, indiquant que ce lien est indépendant du genre. Enfin, des cas d'IMC très élevés apparaissent uniquement chez les hommes, mais uniquement sous forme d'outliers. Les individus présentant un IMC très élevé apparaissent uniquement sous forme d'outliers et ne sont pas représentatifs de la population étudiée, ce qui empêche toute généralisation.
+
+```{r}
+#| echo: false
+#| fig-cap: "Boxplots des variables quantitatives selon le niveau"
+#| label: fig-boxplots-variables-quantitatives-par-niveau
+#| fig-width: 7
+#| fig-height: 5
+
+ggplot(
+  SalleDeSport_long |> filter(variable != "height"),
+  aes(x = level, y = value, fill = level)
+) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
+  facet_wrap(~ variable, scales = "free_y") +
+  theme_minimal() +
+  labs(
+    x = "Niveau",
+    y = NULL
+  ) +
+  theme(
+    legend.position = "none",
+    strip.text = element_text(face = "bold")
+  )
+
+
+```
+
+**Séparation par niveau (@fig-boxplots-variables-quantitatives-par-niveau)** : Le poids ne semble pas directement lié au niveau, les trois groupes présentant des intervalles inter-quartiles similaires et une valeur de $\eta^2$ proche de zéro. Toutefois, les experts se distinguent par une dispersion plus faible. La durée des séances quand à elle est fortement associée au niveau, avec une augmentation nette de la durée à mesure des niveaux d'expertise, ce que confirme une valeur élevée de $\eta^2$. Cette relation se retrouve logiquement pour les calories dépensées, compte tenu de leur forte corrélation avec la durée. La consommation d'eau suit également cette tendance, mais de façon moins marquée, ce qui s'explique principalement par l'intensité et la durée des séances plutôt que par un effet direct du niveau. La masse grasse apparaît comme un facteur très discriminant du niveau, les experts présentant systématiquement des valeurs plus faibles et une distribution plus resserrée que les débutants et intermédiaires. L'analyse de l'IMC et du poids confirme cette observation : les experts ont des valeurs concentrées dans une plage étroite, tandis que les débutants et intermédiaires présentent une dispersion plus large, incluant des situations de maigreur et d'obésité, les cas d'obésité sévère apparaissant uniquement sous forme d'outliers.
+
+En conclusion, l'expertise se distingue par une masse grasse réduite (12-18 %). Bien que le genre influence la répartition des masses grasses et les extrêmes de l'IMC, la performance reste dictée par la durée des séances et l'intensité de la dépense calorique. Ces résultats confirment que l'assiduité à l'entraînement est le principal levier pour optimiser sa santé physique.
 
 # Analyse en composantes principales
 
 Le principe de l'ACP repose sur la création de composantes principales par combinaison linéaire des variables originales. En éliminant la redondance d'information (corrélations), cette méthode permet de visualiser les individus sur des plans factoriels et d'identifier les axes qui expliquent la plus grande part de l'inertie du nuage de points.
 
-Le jeu de données oppose ici la **morphologie** (poids, taille, IMC, graisse) à la **pratique sportive** (durée, calories, eau, niveau).
+Le jeu de données oppose ici la **morphologie** (poids, taille, IMC, masse grasse) à la **pratique sportive** (durée, calories, eau, niveau).
 
-L'analyse préalable montre de fortes corrélations, notamment entre la durée et les calories, ou le poids et l'IMC. En raison de l'hétérogénéité des unités (kg, h, kcal), nous avions vu qu'elles n’étaient pas à la même échelle. Nous appliquons donc une **ACP centrée réduite**. Cette normalisation assure une contribution équitable de chaque variable à l'inertie, empêchant les variables à forte variance (comme les calories) de dominer l'analyse.
+L'analyse préalable montre de fortes corrélations, notamment entre la durée et les calories, ou le poids et l'IMC. En raison de l'hétérogénéité des unités (kg, h, kcal), nous avions vu qu'elles n'étaient pas à la même échelle. Nous appliquons donc une **ACP centrée réduite**. Cette normalisation assure une contribution équitable de chaque variable à l'inertie, empêchant les variables à forte variance (comme les calories) de dominer l'analyse.
 
 ```{r}
+#| echo: false
+#| fig-cap: "Inertie expliquée par les composantes principales de l'ACP"
+#| label: fig-histogramme-acp
+#| fig-width: 8
+#| fig-height: 4
 
 # ACP centrée-réduite
 res_pca <- PCA(
@@ -598,57 +602,67 @@ fviz_eig(res_pca, addlabels = TRUE)
 
 ```
 
-Les deux premiers axes factoriels expliquent 68,3% de l'inertie totale (41,5% pour l'axe 1 et 26,8% pour l'axe 2), assurant une représentation fidèle des données. Bien que l'essentiel de l'analyse repose sur ce premier plan factoriel, la contribution du troisième axe (17,6%) reste significative et ne sera pas totalement occultée lors de l'interprétation.
+Les deux premiers axes factoriels (@fig-histogramme-acp) expliquent 68,3% de l'inertie totale (41,5% pour l'axe 1 et 26,8% pour l'axe 2), assurant une représentation fidèle des données. Bien que l'essentiel de l'analyse repose sur ce premier plan factoriel, la contribution du troisième axe (17,6%) reste significative et ne sera pas totalement oubliée lors de l'interprétation.
+
+## Analyse de l'ACP
 
 ```{r}
+#| echo: false
+#| fig-cap: "Cercle des corrélations sur le plan factoriels 1-2"
+#| label: fig-cercle-acp
+#| fig-width: 8
+#| fig-height: 4
 
-# cercle des corrélations
-fviz_pca_var(res_pca,
-             repel = TRUE)
+fviz_pca_var(
+  res_pca,
+  axes = c(1, 2),
+  repel = TRUE,
+  title = ""
+)
+```
 
-# matrice des corrélations
+Dans un premier temps, on remarque que les flèches des variables poids, durée, calories, eau, IMC sont plus longues. Ces variables sont donc bien représentées sur le plan factoriel 1-2 (@fig-cercle-acp). La flèche de la hauteur est plus proche du centre, cette variable est donc moins bien représentée par les deux premières composantes principales.
+
+```{r}
+#| echo: false
+#| fig-cap: "Matrice des corrélations entre les variables et les axes 1, 2 et 3 de l'ACP"
+#| label: fig-matrice-acp
+#| fig-width: 8
+#| fig-height: 4
+
 cor_3axes <- res_pca$var$cor[, 1:3, drop = FALSE]
 
 corrplot(
   cor_3axes,
   method = "ellipse",
-  addCoef.col = "black",
   number.cex = 0.8,
   tl.cex = 0.9
 )
 
 ```
 
-## Analyse du cercle des corrélations
-
-Dans un premier temps, on remarque que les flèches des variables poids, durée, calories, eau, IMC sont plus longues Ces variables sont donc bien représentées sur le plan factoriel. La flèche de la hauteur est plus proche du centre, cette variable est donc moins bien représentée par les deux premières composantes principales.
-
-L'axe des abscisse (Dim1, 41.5 %) est corrélé plus fortement à calories (0.80), durée (0.73), eau (0.73) et masse grasse (-0.83). Ainsi, cette composante principale rassemble les variables durée, calories et eau, qui traduisent de l'intensité d'un entrainement, et les oppose à la variable masse grasse. C'est une observation que nous avions faite précédemment, les personnes avec une masse grasse plus élevées font des séances moins intenses.
+L'axe des abscisse (Dim1, 41.5 %) est corrélé plus fortement à calories (0.80), durée (0.73), eau (0.73) et masse grasse (-0.83) (@fig-matrice-acp). Ainsi, cette composante principale rassemble les variables durée, calories et eau, qui traduisent de l'intensité d'un entrainement, et les oppose à la variable masse grasse. C'est une observation que nous avions faite précédemment, les personnes avec une masse grasse plus élevées font des séances moins intenses.
 
 L'axe des ordonnées est principalement corrélé à l'IMC et au poids, les deux flèches sont très proches. Il est également négativement corrélé à la durée et aux calories. Cela nous permet d'opposer la corpulence des individus et leur endurance.
 
-Enfin, la troisième composante principale est corrélée à la taille et à l'IMC. Cela est cohérent car l'IMC est calculé en fonction de la taille. De plus la taille est assez faiblement corrélé aux deux premières composantes principales (0.35 et 0.20). Son influence sur les performances sportives et la corpulence est donc limitée. Cela justifie que l'on ne garde que les 2 premières composantes principales.
-
-En conclusion, le premier axe oppose des profils à forte intensité d'entraînement à des profils à forte masse grasse. Le second axe traduit principalement des différences morphologiques liées au poids et à l'IMC. La troisième composante est surtout associée à la taille et apporte une information complémentaire.
-
 ```{r}
+#| echo: false
+#| fig-cap: "Cercles des corrélations sur le plan factoriel 1-3"
+#| label: fig-cercle-acp-bis
+#| fig-width: 8
+#| fig-height: 4
 
-# Graphique des individus
-fviz_pca_ind(res_pca,
-             geom = "point",
-             habillage = "gender",
-             addEllipses = TRUE)
-
-# Autre lecture intéressante :
-fviz_pca_ind(res_pca, col.ind = "cos2")
-
-
-
+fviz_pca_var(
+  res_pca,
+  axes = c(1, 3),
+  repel = TRUE,
+  title = ""
+)
 ```
 
+Enfin, la troisième composante principale (@fig-cercle-acp-bis) est corrélée à la taille et à l'IMC. Cela est cohérent car l'IMC est calculé en fonction de la taille. De plus, la taille est assez faiblement corrélé aux deux premières composantes principales (0.35 et 0.20, @fig-matrice-acp). Son influence sur les performances sportives et la corpulence est donc limitée. Cela justifie que l'on ne garde que les 2 premières composantes principales.
 
-
-
+En conclusion, le premier axe oppose des profils à forte intensité d'entraînement à des profils à forte masse grasse. Le second axe traduit principalement des différences morphologiques liées au poids et à l'IMC. La troisième composante est surtout associée à la taille et apporte une information seulement complémentaire mais ne permet de tirer aucune conclusion supplémentaire. Le clustering sera donc effectué seulement en 2 dimensions.
 
 # Classification non supervisée (Clustering)
 
@@ -687,7 +701,7 @@ fviz_dend(res_cah,
           )
 ```
 
-### **Choix du nombre de classes**
+### Choix du nombre de classes
 
 Le dendrogramme montre un saut d'inertie majeur lors du passage de 3 à 2 classes. Nous retenons donc une partition en **k=3 classes**. Ce choix est cohérent avec la structure de la variable `level` qui comporte 3 modalités (Débutant, Intermédiaire, Expert). Nous chercherons par la suite à vérifier si ces classes statistiques recouvrent effectivement ces niveaux d'expertise ou si elles révèlent une autre segmentation (ex: distinction Homme/Femme ou Morphologie).
 
@@ -804,16 +818,12 @@ En projetant la partition K-means sur le premier plan factoriel et en la croisan
 -   **Cluster 2 (Les "Intermédiaires") :** Le groupe central et volumineux. Il rassemble la majorité des usagers, avec des performances et une morphologie moyennes. C'est ce manque de caractéristiques extrêmes qui rend ce groupe plus difficile à délimiter (comme vu dans la comparaison CAH/Kmeans).
 
 ```{r}
-# Une fois votre clustering terminé (res_kmeans)
 SalleDeSport$cluster <- as.factor(res_kmeans$cluster)
 
-# 1. Description automatique des classes (variables quantitatives)
-# Calcule la moyenne des variables pour chaque cluster
 aggregate(cbind(weight, height, duration, calories, fat, bmi) ~ cluster, 
           data = SalleDeSport, 
           FUN = mean)
 
-# 2. Croisement avec les variables qualitatives (Tableaux croisés)
 print("Répartition des Niveaux par Cluster :")
 table(SalleDeSport$cluster, SalleDeSport$level)
 
@@ -821,9 +831,6 @@ print("Répartition des Genres par Cluster :")
 table(SalleDeSport$cluster, SalleDeSport$gender)
 ```
 
-# Bibliographie
+# Conclusion
 
--   Nom .P et al., ANNÉE, \[en ligne, consulté le XX YYYYYYYY\] : lien
--   Sedukin D. V. et al., 2025, \[en ligne, consulté le 29 Décembre\] : https://vpbim.com.ua/wp-content/uploads/2025/10/54.pdf
--   Duncan M. J. et al., 2016, \[en ligne, consulté le 29 Décembre\] : https://www.tandfonline.com/doi/abs/10.1080/02640414.2016.1258483
-
+En conclusion, cette étude met en évidence que la performance en salle de sport dépend principalement de l'intensité et de la régularité de l'entraînement, mesurées par la durée des séances et la dépense calorique, plutôt que de la morphologie seule. L'analyse descriptive, l'ACP et le clustering montrent plutôt que les profils les plus experts se distinguent par une masse grasse plus faible et des séances plus longues, tandis que le genre et le poids jouent un rôle secondaire. Ces observations montrent que la condition physique est davantage associée à la pratique régulière et soutenue qu'aux caractéristiques morphologiques.

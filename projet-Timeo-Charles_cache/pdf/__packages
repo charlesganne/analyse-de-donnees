@@ -1,0 +1,13 @@
+ggplot2
+dygraphs
+corrplot
+gridExtra
+scales
+forcats
+reshape2
+BioStatR
+patchwork
+dplyr
+tidyr
+FactoMineR
+factoextra
