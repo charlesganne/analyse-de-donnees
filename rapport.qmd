@@ -20,10 +20,10 @@ toc-depth: 2 # pour gérer la profondeur de la table des matières
 toc-title: Table des matières # Titre de la table des matieres
 toc-location: left # sommaire à gauche
 execute: 
-  echo: true # le code R s’affiche dans le rendu final
-cache: true # Quarto peut réutiliser des résultats déjà calculés (plus rapide quand on recompile)
+  echo: true # le code R s'affiche dans le rendu final
+cache: true # réutiliser des résultats déjà calculés (plus rapide quand on recompile)
 message: false
-warning: false # messages/warnings cachés dans le livrable (sortie plus propre).
+warning: false # messages/warnings cachés dans le livrable
 ---
 
 ```{r}
@@ -132,7 +132,7 @@ p_calories_box <- ggplot(SalleDeSport, aes(x = "", y = calories)) +
 
 ### Poids (weight)
 
-Le boxplot (@fig-boxplot-poids-masse-grasse-imc-calories) montre une médiane de 70 kg, avec une dispersion notable (la moitié des individus se situe entre 58 et 86 kg). On observe des valeurs atypiques élevées (points au-dessus de 125–130 kg). L'histogramme a confirmé une distribution asymétrique à droite : beaucoup d'individus entre 50 et 85 kg avec un maximum de fréquence autour de 60–70 kg. On a observé une queue à droite marquée, correspondant à des individus plus lourds (au-delà de 100 kg), déjà visibles comme valeurs atypiques/outliers sur le boxplot. La distribution n'est donc pas strictement gaussienne.
+Le boxplot (@fig-boxplot-poids-masse-grasse-imc-calories) montre une médiane de 70 kg, avec une dispersion notable (la moitié des individus se situe entre 58 et 86 kg). On observe des valeurs atypiques élevées (points au-dessus de 125-130 kg). L'histogramme a confirmé une distribution asymétrique à droite : beaucoup d'individus entre 50 et 85 kg avec un maximum de fréquence autour de 60-70 kg. On a observé une queue à droite marquée, correspondant à des individus plus lourds (au-delà de 100 kg), déjà visibles comme valeurs atypiques/outliers sur le boxplot. La distribution n'est donc pas strictement gaussienne.
 
 ### Masse grasse (fat)
 
@@ -280,7 +280,7 @@ p_height_box <- ggplot(SalleDeSport, aes(x = "", y = height)) +
 
 ### Eau (water)
 
-@fig-boxplot-water-duration-height, la médiane est autour de 2,6 L, et l'intervalle interquartile va de 2,2 à 3,1 L. L'étendue est d'environ 1,5 à 3,7 L. La distribution paraît assez concentrée autour de 2–3 L, sans valeurs extrêmes marquantes. @fig-histogramme-calories-water, on remarque des pics marqués autour de certaines valeurs (notamment 2,7 L et 3,5 L), suggérant des valeurs arrondies ou/et des comportements standardisés (bouteilles, recommandation de cette salle de sport).
+@fig-boxplot-water-duration-height, la médiane est autour de 2,6 L, et l'intervalle interquartile va de 2,2 à 3,1 L. L'étendue est d'environ 1,5 à 3,7 L. La distribution paraît assez concentrée autour de 2-3 L, sans valeurs extrêmes marquantes. @fig-histogramme-calories-water, on remarque des pics marqués autour de certaines valeurs (notamment 2,7 L et 3,5 L), suggérant des valeurs arrondies ou/et des comportements standardisés (bouteilles, recommandation de cette salle de sport).
 
 ### Durée (duration)
 
@@ -288,7 +288,7 @@ p_height_box <- ggplot(SalleDeSport, aes(x = "", y = height)) +
 
 ### Taille (height)
 
-@fig-boxplot-water-duration-height, la médiane est proche de 1,70–1,72 m, avec un intervalle interquartile entre 1,62 et 1,80 m. Le boxplot ne met pas en évidence d'outliers. L'histogramme (@fig-histogramme-duration-height) suggère une distribution plutôt concentrée entre 1,60 et 1,80 m, avec deux petites "bosses" (distribution pas parfaitement en cloche, probablement liée au fait que hommes et femmes soient dans le même jeu de données), mais sans valeurs extrêmes dominantes. En traçant les graphiques avec différents nombres de bins, on a remarqué que certaines configurations masquaient le double pic tandis que d'autres le faisait clairement apparaître. On a donc choisi 19 bins pour qu'ils apparaissent sans trop montrer les petites variations autour.
+@fig-boxplot-water-duration-height, la médiane est proche de 1,70-1,72 m, avec un intervalle interquartile entre 1,62 et 1,80 m. Le boxplot ne met pas en évidence d'outliers. L'histogramme (@fig-histogramme-duration-height) suggère une distribution plutôt concentrée entre 1,60 et 1,80 m, avec deux petites "bosses" (distribution pas parfaitement en cloche, probablement liée au fait que hommes et femmes soient dans le même jeu de données), mais sans valeurs extrêmes dominantes. En traçant les graphiques avec différents nombres de bins, on a remarqué que certaines configurations masquaient le double pic tandis que d'autres le faisait clairement apparaître. On a donc choisi 19 bins pour qu'ils apparaissent sans trop montrer les petites variations autour.
 
 ```{r}
 #| echo: false
@@ -448,7 +448,7 @@ La relation entre la durée des séances et les calories brûlées est particuli
 
 La masse grasse se distingue par des corrélations négatives avec la durée des séances, les calories brûlées et la consommation d'eau. Cela suggère que les individus présentant un pourcentage de masse grasse plus élevé ont tendance à réaliser des séances plus courtes et moins intenses, accompagnées d'une hydratation plus faible. À l'inverse, les variables morphologiques telles que le poids et la taille ne sont pas liées aux indicateurs de performance sportive considérés ici. Cette dissociation indique que, dans ce jeu de données et avec ces variables, la morphologie seule n'explique pas directement les performances, qui semblent davantage dépendre de l'effort fourni et de la composition corporelle.
 
-Enfin, il est étonnant de voir que le masse grasse n'est pas corrélé au poids ou à l'IMC. Cette variable n'augmente donc pas mécaniquement avec le poids, surtout dans une population sportive où la masse musculaire peut représenter une part importante du poids total. Cette observation avait déjà été faire lors de l'expérience super-size me. Le sujet n'avait pas prit beaucoup de poids mais était quand même devenu en très mauvaise santé, notamment à cause de sa masse grasse (et beaucoup d'autres troubles liés à la junk-food).
+Enfin, il est étonnant de voir que le masse grasse n'est pas corrélé au poids ou à l'IMC. Cette variable n'augmente donc pas mécaniquement avec le poids, surtout dans une population sportive où la masse musculaire peut représenter une part importante du poids total. Cette observation avait déjà été faire lors de l'expérience documentée dans le film "super-size me" de Morgan Spurlock sorti en 2004. Le sujet n'avait pas prit beaucoup de poids mais était quand même devenu en très mauvaise santé, notamment à cause de sa masse grasse (et beaucoup d'autres troubles liés à la junk-food).
 
 ## Variables quantitatives en fonction de variables qualitatives
 
@@ -572,7 +572,7 @@ ggplot(
 
 En conclusion, l'expertise se distingue par une masse grasse réduite (12-18 %). Bien que le genre influence la répartition des masses grasses et les extrêmes de l'IMC, la performance reste dictée par la durée des séances et l'intensité de la dépense calorique. Ces résultats confirment que l'assiduité à l'entraînement est le principal levier pour optimiser sa santé physique.
 
-# Analyse en composantes principales
+# Analyse en composantes principales (ACP)
 
 Le principe de l'ACP repose sur la création de composantes principales par combinaison linéaire des variables originales. En éliminant la redondance d'information (corrélations), cette méthode permet de visualiser les individus sur des plans factoriels et d'identifier les axes qui expliquent la plus grande part de l'inertie du nuage de points.
 
@@ -596,7 +596,7 @@ res_pca <- PCA(
   graph = FALSE
 )
 
-# Valeurs propres (choix du nombre d’axes)
+# Valeurs propres (choix du nombre d'axes)
 #res_pca$eig
 fviz_eig(res_pca, addlabels = TRUE)
 
@@ -604,7 +604,7 @@ fviz_eig(res_pca, addlabels = TRUE)
 
 Les deux premiers axes factoriels (@fig-histogramme-acp) expliquent 68,3% de l'inertie totale (41,5% pour l'axe 1 et 26,8% pour l'axe 2), assurant une représentation fidèle des données. Bien que l'essentiel de l'analyse repose sur ce premier plan factoriel, la contribution du troisième axe (17,6%) reste significative et ne sera pas totalement oubliée lors de l'interprétation.
 
-## Analyse de l'ACP
+## Analyse du premier plan factoriel
 
 ```{r}
 #| echo: false
@@ -641,7 +641,7 @@ corrplot(
 
 ```
 
-L'axe des abscisse (Dim1, 41.5 %) est corrélé plus fortement à calories (0.80), durée (0.73), eau (0.73) et masse grasse (-0.83) (@fig-matrice-acp). Ainsi, cette composante principale rassemble les variables durée, calories et eau, qui traduisent de l'intensité d'un entrainement, et les oppose à la variable masse grasse. C'est une observation que nous avions faite précédemment, les personnes avec une masse grasse plus élevées font des séances moins intenses.
+L'axe des abscisses (Dim1, 41.5 %) est corrélé plus fortement à calories (0.80), durée (0.73), eau (0.73) et masse grasse (-0.83) (@fig-matrice-acp). Ainsi, cette composante principale rassemble les variables durée, calories et eau, qui traduisent de l'intensité d'un entrainement, et les oppose à la variable masse grasse. C'est une observation que nous avions faite précédemment, les personnes avec une masse grasse plus élevées font des séances moins intenses.
 
 L'axe des ordonnées est principalement corrélé à l'IMC et au poids, les deux flèches sont très proches. Il est également négativement corrélé à la durée et aux calories. Cela nous permet d'opposer la corpulence des individus et leur endurance.
 
@@ -660,19 +660,23 @@ fviz_pca_var(
 )
 ```
 
+## Analyse de la troisième composante principale
+
 Enfin, la troisième composante principale (@fig-cercle-acp-bis) est corrélée à la taille et à l'IMC. Cela est cohérent car l'IMC est calculé en fonction de la taille. De plus, la taille est assez faiblement corrélé aux deux premières composantes principales (0.35 et 0.20, @fig-matrice-acp). Son influence sur les performances sportives et la corpulence est donc limitée. Cela justifie que l'on ne garde que les 2 premières composantes principales.
+
+## Conclusion
 
 En conclusion, le premier axe oppose des profils à forte intensité d'entraînement à des profils à forte masse grasse. Le second axe traduit principalement des différences morphologiques liées au poids et à l'IMC. La troisième composante est surtout associée à la taille et apporte une information seulement complémentaire mais ne permet de tirer aucune conclusion supplémentaire. Le clustering sera donc effectué seulement en 2 dimensions.
 
 # Classification non supervisée (Clustering)
 
-Afin de regrouper les individus en classes homogènes, nous allons utiliser les résultats de notre ACP. Plutôt que de travailler sur les variables brutes, nous réalisons la classification sur les coordonnées des individus sur les **3 premiers axes factoriels**.
+Afin de regrouper les individus en classes homogènes, nous allons utiliser les résultats de notre ACP. Plutôt que de travailler sur les variables brutes, nous réalisons la classification sur les coordonnées des individus sur les 2 premiers axes factoriels.
 
-Cette approche permet de baser les groupes sur les dimensions structurantes identifiées précédemment (Intensité, Corpulence, Taille) en éliminant le bruit résiduel des derniers axes.
+Cette approche permet de baser les groupes sur les dimensions structurantes identifiées précédemment (Intensité, Corpulence) en éliminant le bruit résiduel des derniers axes.
 
 ```{r}
 #| echo: true
-donnees_acp <- res_pca$ind$coord[, 1:3]
+donnees_acp <- res_pca$ind$coord[, 1:2]
 head(donnees_acp)
 ```
 
@@ -684,6 +688,7 @@ Nous effectuons une CAH sur ces coordonnées factorielles en utilisant la distan
 #| echo: false
 #| fig-cap: "Dendrogramme et choix du nombre de classes"
 #| label: fig-dendrogramme
+#| fig-height: 3
 
 dist_acp <- dist(donnees_acp, method = "euclidean")
 res_cah <- hclust(dist_acp, method = "ward.D2")
@@ -710,6 +715,7 @@ Nous confrontons ce résultat avec la méthode des K-means. Pour valider statist
 #| echo: false
 #| fig-cap: "Méthode du coude pour le choix optimal de k"
 #| label: fig-elbow
+#| fig-height: 4
 
 set.seed(123) # Reproductibilité
 # Visualisation de l'inertie intra-classe
@@ -724,6 +730,8 @@ Le graphique (@fig-elbow) confirme que l'ajout d'un 4ème groupe n'apporte pas u
 #| echo: false
 #| fig-cap: "Partition K-means projetée sur le premier plan factoriel"
 #| label: fig-kmeans-pca
+#| fig-height: 4
+#| fig-width: 8
 
 set.seed(123) 
 res_kmeans <- kmeans(donnees_acp, centers = 3, nstart = 25)
@@ -735,8 +743,7 @@ fviz_pca_ind(res_pca,
              col.ind = SalleDeSport$cluster_kmeans,
              palette = c("#2E9FDF", "#E7B800", "#FC4E07"),
              addEllipses = TRUE,
-             legend.title = "Cluster K-means",
-             title = "Projection des clusters K-means sur le plan ACP (1-2)"
+             legend.title = "Cluster K-means"
 )
 ```
 
@@ -773,11 +780,11 @@ library(knitr)
 kable(matrice_claire)
 ```
 
-L'analyse comparative révèle une forte convergence entre les deux approches, avec un taux de concordance global de **`r round(accord, 1)`%**. Cette stabilité structurelle valide la pertinence des classes identifiées. Toutefois, la supériorité opérationnelle des K-means sur la CAH dans ce contexte précis transparaît à la lecture croisée de la matrice de confusion (@tbl-confusion) et de la projection factorielle (@fig-kmeans-pca).
+L'analyse comparative met en évidence une forte cohérence entre les deux méthodes, avec un taux de concordance global de **`r round(accord, 1)`%**. Cette stabilité des résultats confirme la pertinence des groupes obtenus. Néanmoins, une meilleure efficacité pratique des K-means par rapport à la CAH apparaît clairement à travers l'analyse conjointe de la matrice de confusion (@tbl-confusion) et de la projection factorielle (@fig-kmeans-pca).
 
-En effet, la CAH repose sur une logique agrégative descendante au caractère irréversible : une fois deux individus liés, ils ne peuvent plus être dissociés, ce qui peut figer des partitions "rigides" basées sur des proximités locales initiales. À l'inverse, l'algorithme des K-means procède par optimisation itérative, réattribuant chaque individu au centre de gravité (centroïde) le plus proche à chaque cycle.
+En effet, la CAH fonctionne selon un mécanisme de regroupement progressif et irréversible : une fois deux individus associés, il n'est plus possible de les séparer, ce qui peut conduire à des partitions figées, influencées par les premières proximités observées. À l'inverse, l'algorithme des K-means repose sur un processus d'optimisation itératif, dans lequel chaque individu est réaffecté au centroïde le plus proche à chaque itération.
 
-Comme l'illustre la @fig-kmeans-pca, cette souplesse permet d'affiner les frontières des groupes : les individus "frontaliers", dont le profil hésitait entre "Fitness" et "Remise en forme" lors de la CAH, sont ici réaffectés avec précision. Les ellipses de confiance, nettement convexes et sans chevauchement majeur, confirment la robustesse de cette segmentation. C'est cette capacité d'ajustement dynamique qui justifie le choix des K-means pour notre profilage final.
+Comme le montre la @fig-kmeans-pca, cette flexibilité permet de mieux ajuster les limites entre les groupes : les individus situés à la frontière, de deux cluster avec la CAH, sont ici classés de manière plus cohérente. Les ellipses de confiance, bien définies et peu chevauchantes, renforcent l'idée d'une segmentation solide. Cette capacité d'adaptation progressive explique ainsi le choix des K-means comme méthode retenue pour le profilage final.
 
 ## Croisement et Profilage
 
@@ -786,17 +793,18 @@ Pour donner du sens à ces clusters, nous analysons les caractéristiques moyenn
 ```{r}
 #| echo: false
 #| label: tbl-moyennes
+#| tbl-cap: "Caractéristiques moyennes des profils (Moyennes)"
 # Calcul des moyennes par cluster
 moyennes_clusters <- aggregate(cbind(weight, height, duration, calories, fat, bmi) ~ cluster_kmeans, 
                                data = SalleDeSport, mean)
 
-kable(moyennes_clusters, digits = 2, caption = "Caractéristiques moyennes des profils (Moyennes)")
+kable(moyennes_clusters, digits = 2)
 ```
 
 ```{r}
 #| echo: false
 #| fig-cap: "Composition des clusters par Niveau et Genre"
-#| fig-height: 4
+#| fig-height: 3.5
 #| label: fig-comp
 
 p_prof_level <- ggplot(SalleDeSport, aes(x = cluster_kmeans, fill = level)) +
@@ -822,7 +830,7 @@ Sur la base des moyennes et des graphiques ci-dessus, nous identifions trois pro
 
     -   Caractérisé par un poids et un BMI élevés (\>30, zone d'obésité du @tbl-moyennes) et une masse grasse importante.
 
-    -   Majoritairement composé d'hommes d'après @fig-comp (probablement gabarits imposants) de niveau débutant ou intermédiaire. Leurs séances sont plus courtes (\~1.1h).
+    -   Majoritairement composé d'hommes d'après la @fig-comp de niveau débutant ou intermédiaire. Leurs séances sont plus courtes (\~1.1h).
 
 2.  **Le Cluster "Performance / Athlètes"** (Correspondant au groupe avec *duration* \> 1.6h et *calories* \> 1200 dans @tbl-moyennes) :
 
@@ -834,17 +842,23 @@ Sur la base des moyennes et des graphiques ci-dessus, nous identifions trois pro
 
     -   Profils plus légers avec un BMI normal (\~22).
 
-    -   Majoritairement féminin d'après @fig-comp, mélangeant débutants et intermédiaires. C'est le groupe le plus volumineux, représentant une pratique d'entretien régulière mais modérée.
+    -   Majoritairement féminin d'après la @fig-comp, mélangeant débutants et intermédiaires. C'est le groupe le plus volumineux, représentant une pratique d'entretien régulière mais modérée.
 
 # Conclusion
 
 Cette étude statistique approfondie des 973 membres de la salle de sport nous a permis de dégager une structure claire derrière l'hétérogénéité des données.
 
-En premier lieu, l'analyse descriptive et bidimensionnelle a révélé que la dépense calorique ne dépend pas uniquement de la durée de l'effort, mais semble fortement modulée par le niveau d'expertise, suggérant une intensité d'entraînement supérieure chez les profils aguerris.
+En premier lieu, l'analyse descriptive et bidimensionnelle a révélé que la dépense calorique dépend de la durée de l'effort et du niveau d'expertise, suggérant une intensité d'entraînement supérieure chez les profils aguerris.
 
-L'Analyse en Composantes Principales a confirmé cette intuition en structurant l'information autour de deux axes majeurs : 1. **L'axe de la performance et de l'intensité**, opposant les experts (séances longues, forte dépense calorique, faible taux de gras) aux débutants. 2. **L'axe de la morphologie**, distinguant les individus selon leur gabarit (Poids/BMI) indépendamment de leur niveau sportif.
+L'Analyse en Composantes Principales a confirmé cette intuition en structurant l'information autour de deux axes majeurs : 1. **L'axe de la performance et de l'intensité**, opposant les experts (séances longues, forte dépense calorique, faible taux de gras) aux débutants. 2. **L'axe de la morphologie**, distinguant les individus selon leur gabarit (Poids/IMC) indépendamment de leur niveau sportif.
 
-Enfin, la démarche de clustering (CAH et K-means) a permis de segmenter la population en trois profils cohérents et exploitables pour une gestion de salle de sport : - **Le groupe "Performance" (Experts)** : Véritables piliers de la salle, ils se distinguent par une efficacité métabolique élevée. - **Le groupe "Remise en forme" (Profils lourds)** : Majoritairement des débutants/intermédiaires avec un BMI élevé, représentant un public nécessitant un accompagnement spécifique pour la perte de masse grasse. - **Le groupe "Fitness/Entretien" (Profils légers)** : Le segment le plus représenté, composé de pratiquants réguliers aux caractéristiques physiques standards.
+Enfin, la démarche de clustering (CAH et K-means) a permis de segmenter la population en trois profils cohérents et exploitables pour une gestion de salle de sport :
+
+-   **Le groupe "Performance" (Experts)** : Ils se distinguent par une efficacité métabolique élevée.
+
+-   **Le groupe "Remise en forme" (Profils lourds)** : Majoritairement des débutants/intermédiaires avec un IMC élevé, représentant un public nécessitant un accompagnement spécifique pour la perte de poids.
+
+-   **Le groupe "Fitness/Entretien" (Profils légers)** : Le segment le plus représenté, composé de pratiquants réguliers aux caractéristiques physiques standards.
 
 D'un point de vue méthodologique, la forte concordance entre la CAH et les K-means (plus de 90% d'accord) ainsi que la projection nette des clusters sur le plan de l'ACP valident la robustesse de notre modèle. Cette analyse prouve que si le genre et la morphologie initiale sont des données fixes, le **niveau d'expérience** reste la variable déterminante de la routine d'exercice et des résultats physiques observés.
 
